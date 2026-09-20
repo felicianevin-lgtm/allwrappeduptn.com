@@ -258,7 +258,7 @@ def estimator(compact=False):
     <div class="field"><span class="hint" style="font-weight:800;color:var(--ink-soft)">Add-ons</span>
       <div class="chips">
         <label class="chip"><input type="checkbox" name="addon_notes"><span>Handwritten note cards</span></label>
-        <label class="chip"><input type="checkbox" name="addon_luxe"><span>Premium ribbon &amp; embellishments</span></label>
+        <label class="chip"><input type="checkbox" name="addon_luxe"><span>Ribbon upgrade</span></label>
         <label class="chip"><input type="checkbox" name="delivery"><span>Pickup &amp; delivery</span></label>
         <label class="chip"><input type="checkbox" name="rush"><span>Rush (under 72 hrs)</span></label>
       </div></div>
@@ -266,7 +266,7 @@ def estimator(compact=False):
       <div class="chips">
         <label class="chip"><input type="checkbox" name="disc_nobows"><span>Just wrapping, no bows</span></label>
         <label class="chip"><input type="checkbox" name="disc_boxed"><span>Everything boxed &amp; ready</span></label>
-        <label class="chip"><input type="checkbox" name="disc_reuse"><span>Reusing last year's boxes</span></label>
+        <label class="chip"><input type="checkbox" name="disc_reuse"><span>Reusing last year's boxes (repeat clients)</span></label>
       </div></div>
   </div>
   <div class="estimate-out">
@@ -313,7 +313,7 @@ home_body = f'''
       <div class="audience corp reveal">
         <span class="tag">For businesses</span>
         <h3>Corporate gift wrapping</h3>
-        <p>Client gifts, employee appreciation and holiday party favors. Consistent, on-brand wrapping for 25 to 2,500 gifts, delivered ready to present.</p>
+        <p>Client gifts, employee appreciation and holiday party favors. Consistent, on-brand wrapping for 25 to 250 gifts and up, delivered ready to present.</p>
         <ul><li>Brand-color ribbon &amp; logo gift tags</li><li>Volume pricing and a single invoice</li><li>Pickup from your office, delivery on your date</li></ul>
         <a class="btn" href="corporate-gift-wrapping.html">Corporate packages →</a>
       </div>
@@ -436,7 +436,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
       <div class="stats">
         <div class="stat"><b>25+</b><span>gifts for volume pricing</span></div>
         <div class="stat"><b>1</b><span>itemized invoice</span></div>
-        <div class="stat"><b>5</b><span>business-day standard turnaround</span></div>
+        <div class="stat"><b>1</b><span>written quote with your turnaround date</span></div>
       </div>
       <figure class="photo-card reveal"><img src="assets/photos/land-candy-cane-display.webp" alt="A holiday order in candy-stripe and chalkboard papers with tulle-wrapped towers, each gift tagged by recipient" width="1400" height="933" loading="lazy"><figcaption>One order, one look: candy-stripe and chalkboard papers, every gift tagged by recipient.</figcaption></figure>
       <div class="callout"><span class="h">Branded presentation</span><p>Send your logo and brand colors. We source ribbon to match and print custom gift tags so every gift reads as yours.</p></div>
@@ -454,7 +454,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
     <div class="section-head reveal"><span class="kicker">Corporate packages</span><h2>Volume pricing that gets better as the order grows</h2><p>Corporate rates are for Classic wraps in your colors. Themed or custom builds are quoted separately. Final per-gift price depends on sizes and finishes.</p></div>
     <div class="pricing">
       <div class="plan reveal"><span class="name">Starter</span><h3>Team gifts</h3><p class="who">25 – 99 gifts · small offices, departments, client lists</p><div class="price">from $9<small>/gift</small></div><p class="per">10% off à la carte pricing</p>
-        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Pickup &amp; delivery from $50 round trip</li><li>5-business-day turnaround</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
+        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Pickup &amp; delivery from $50 round trip</li><li>Turnaround date confirmed with your quote</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
       <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Team</span><h3>Holiday party</h3><p class="who">100 – 249 gifts · company parties, client appreciation events</p><div class="price">from $8<small>/gift</small></div><p class="per">20% off à la carte pricing</p>
         <ul><li>Up to two wrap styles (for example, staff and VIP)</li><li>Custom logo gift tags included</li><li>Brand-color ribbon sourced to match</li><li>Pickup &amp; delivery to Knoxville or Chattanooga, quoted by trip</li><li>Delivery straight to the venue on party day</li></ul><a class="btn btn-primary" href="contact.html?type=corporate">Quote the Team package</a></div>
       <div class="plan reveal"><span class="name">Enterprise</span><h3>Large &amp; multi-site</h3><p class="who">250+ gifts · multiple offices, franchise groups, hospital systems</p><div class="price">Custom<small> quote</small></div><p class="per">25%+ volume savings</p>
@@ -490,9 +490,8 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
 
 <section>
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Holiday scheduling</span><h2>December capacity is limited</h2><p>Corporate holiday slots are reserved in order of deposit. Booking by early November guarantees delivery before your event date.</p></div>
+    <div class="section-head reveal"><span class="kicker">Holiday scheduling</span><h2>December capacity is limited</h2><p>Holiday scheduling is open now and slots are held in the order deposits come in. The sooner you book, the better: once the slots are full, dates and turnaround times cannot be guaranteed.</p></div>
     <div class="countdown" data-countdown></div>
-    <p style="text-align:center;color:var(--ink-soft)">To guarantee delivery before Christmas, book by <strong data-book-by>early December</strong>.</p>
   </div>
 </section>
 
@@ -563,7 +562,7 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
         <tr><td><strong>Extra large group</strong><small>51+ gifts</small></td><td>Big families, class parties, office exchanges</td><td>from $120</td></tr>
       </tbody>
     </table>
-    <p class="fineprint">Prices include all wrapping materials. Oversized and odd-shaped items add from $15 each. Gift cards can be dressed up in a small box with ribbon and a tag for $5 each.</p>
+    <p class="fineprint">Prices include all wrapping materials. Oversized and odd-shaped items add from $15 each. Gift cards count as gifts in your group. Just gift cards? $5 each, no minimum.</p>
   </div>
 </section>
 
@@ -588,9 +587,9 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
     <div class="section-head reveal"><span class="kicker">Discounts</span><h2>Three easy ways to save</h2><p>Taken off the group price on any Classic order.</p></div>
     <table class="sizes reveal">
       <tbody>
-        <tr><td><strong>Just wrapping, no bows</strong></td><td>Paper and a tag only, no ribbon or bow</td><td>$15 off</td></tr>
+        <tr><td><strong>Just wrapping, no bows</strong></td><td>Paper and a tag, no ribbon or bow</td><td>$15 off</td></tr>
         <tr><td><strong>Everything boxed and ready to wrap</strong></td><td>Gifts arrive already in boxes, so wrapping starts right away</td><td>$10 off</td></tr>
-        <tr><td><strong>Recycled box discount</strong></td><td>Save and reuse gift boxes from last year</td><td>$10 off</td></tr>
+        <tr><td><strong>Recycled box discount</strong><small>repeat clients</small></td><td>Save the gift boxes from last year's order and bring them back</td><td>$10 off</td></tr>
       </tbody>
     </table>
     <p class="fineprint">Bringing your own paper and ribbon? Mention it when you book and we will price it in.</p>
@@ -619,11 +618,11 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
       <tbody>
         <tr><td><strong>Handwritten note card</strong></td><td>Your message, our handwriting, tucked under the ribbon</td><td>$2 / gift</td></tr>
         <tr><td><strong>Custom logo gift tags</strong></td><td>Heavy card stock printed with your logo and message</td><td>$1.50 / gift</td></tr>
-        <tr><td><strong>Premium ribbon &amp; embellishments</strong></td><td>Satin or velvet ribbon, tulle, a topper or ornament added to a Classic wrap</td><td>+$4 / gift</td></tr>
+        <tr><td><strong>Ribbon upgrade</strong></td><td>Satin, velvet or wired ribbon in place of standard ribbon on a Classic wrap. For themed builds, see Signature custom.</td><td>+$4 / gift</td></tr>
         <tr><td><strong>Rush (under 72 hours)</strong></td><td>Subject to availability, especially in December</td><td>+25%</td></tr>
-        <tr><td><strong>Gift card wrap</strong></td><td>A gift card dressed up in a small box with ribbon and a tag</td><td>$5 each</td></tr>
+        <tr><td><strong>Gift card wrap</strong></td><td>A gift card dressed up in a small box with ribbon and a tag. Counts as a gift in a group order, or $5 each on its own with no minimum.</td><td>$5 each</td></tr>
         <tr><td><strong>Oversized / odd shape</strong></td><td>Baskets, bikes, guitars, plush animals, anything without flat sides</td><td>from $15 each</td></tr>
-        <tr><td><strong>Ship-to-us receiving</strong></td><td>Online orders sent straight to Amiebeth, logged on arrival and checked against your list. Saves the pickup trip.</td><td>$15 / order</td></tr>
+        <tr><td><strong>Ship-to-us receiving</strong></td><td>Online orders sent straight to Amiebeth, logged on arrival and checked against your list. One flat fee per wrapping order, however many packages or stores they come from. Saves the pickup trip.</td><td>$15 / order</td></tr>
         <tr><td><strong>Pickup &amp; delivery</strong></td><td>Round trip beyond 5 miles of Sweetwater. Knoxville, Maryville, Cleveland and Chattanooga quoted by distance.</td><td>from $50</td></tr>
       </tbody>
     </table>
@@ -670,7 +669,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Holiday timeline</span><h2>Christmas is closer than it looks</h2></div>
     <div class="countdown" data-countdown></div>
-    <p style="text-align:center;color:var(--ink-soft)">Book by <strong data-book-by>mid-December</strong> to guarantee your gifts are back under the tree in time.</p>
+    <p style="text-align:center;color:var(--ink-soft)"><strong>Holiday scheduling is open now.</strong> The sooner you book, the better: once the slots are full, dates and turnaround times cannot be guaranteed.</p>
   </div>
 </section>
 
@@ -699,7 +698,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
         <div class="stat"><b>$80</b><span>for 11 to 25 gifts, materials included</span></div>
         <div class="stat"><b>$0</b><span>to drop off in Sweetwater</span></div>
       </div>
-      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. No boxes on the porch for curious kids, and no pickup charge. Receiving is $15 per order.</p></div>
+      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. No boxes on the porch for curious kids, and no pickup charge. Receiving is a flat $15 per wrapping order, however many packages arrive.</p></div>
     </div>
   </div>
 </section>
@@ -709,10 +708,10 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
     <div class="section-head reveal"><span class="kicker">Holiday pricing</span><h2>Pick your group size and consider it done</h2><p>Classic wrapping with paper, ribbon, bows and tags included. Themed and custom builds are quoted by the gift.</p></div>
     <div class="pricing">
       <div class="plan reveal"><span class="name">Small group</span><h3>1 – 10 gifts</h3><p class="who">One person's list or the special few</p><div class="price">$60</div><p class="per">all materials included</p><ul><li>One coordinated palette</li><li>Tags with names</li><li>Drop-off in Sweetwater</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Medium group</span><h3>11 – 25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$80</div><p class="per">all materials included</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li><li>Priority December dates</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan reveal"><span class="name">Large group</span><h3>26 – 50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$100</div><p class="per">51+ gifts from $120</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li><li>First pick of dates</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
+      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Medium group</span><h3>11 – 25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$80</div><p class="per">all materials included</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
+      <div class="plan reveal"><span class="name">Large group</span><h3>26 – 50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$100</div><p class="per">51+ gifts from $120</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
     </div>
-    <p class="fineprint">Standard-size gifts. Oversized items add from $15 each. No bows, pre-boxed and recycled-box discounts apply. <a href="pricing.html">Full price list →</a></p>
+    <p class="fineprint">Standard-size gifts. Oversized items add from $15 each. No-bows and pre-boxed discounts apply; repeat clients who bring back last year's boxes save another $10. <a href="pricing.html">Full price list →</a></p>
   </div>
 </section>
 
@@ -771,7 +770,7 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
     <div class="prose reveal">
       <h2 style="margin-top:0">A little about me</h2>
       <p>I'm {OWNER}. {BIZ} began because every December I was the person friends and family handed their gifts to. Somewhere between wrapping for the whole street and the first office that asked me to finish their client gifts, it became a business.</p>
-      <p>I work from my home in {CITY}, on I-75 between Knoxville and Chattanooga, which means I can collect from a Knoxville office in the morning and deliver to a Chattanooga venue the same week. Every gift is wrapped by hand, by me. What I love most is a theme: a shirt and tie for Dad, a jungle nursery for a baby shower, a whole Christmas in one family's colors. Classic paper-and-ribbon wraps are always on the menu too.</p>
+      <p>I work from my home in {CITY}, right on I-75 between Knoxville and Chattanooga, so pickup and delivery in either direction is an easy trip. Every gift is wrapped by hand, by me. What I love most is a theme: a shirt and tie for Dad, a jungle nursery for a baby shower, a whole Christmas in one family's colors. Classic paper-and-ribbon wraps are always on the menu too.</p>
       <h3>What I care about</h3>
       <ul>
         <li><strong>The details.</strong> A theme that lands, a bow that stays full through the car ride, a tag that makes them smile.</li>
@@ -821,13 +820,13 @@ pages.append(dict(slug="about.html", crumb="About",
 
 # FAQ
 faqs = [
- ("How much does professional gift wrapping cost?", "Classic wrapping is priced by the group with all materials included: $60 for 1 to 10 gifts, $80 for 11 to 25, $100 for 26 to 50 and from $120 for 51 or more. Oversized items add from $15 each and gift cards can be boxed and ribboned for $5. Signature custom wraps, the themed and hand-built ones, start around $15 per gift and are quoted individually because the materials and time are more. Corporate volume pricing starts at $8 per gift for 100 or more."),
+ ("How much does professional gift wrapping cost?", "Classic wrapping is priced by the group with all materials included: $60 for 1 to 10 gifts, $80 for 11 to 25, $100 for 26 to 50 and from $120 for 51 or more. Oversized items add from $15 each. Gift cards count as gifts in the group, or are $5 each on their own with no minimum. Signature custom wraps, the themed and hand-built ones, start around $15 per gift and are quoted individually because the materials and time are more. Corporate volume pricing starts at $8 per gift for 100 or more."),
  ("Do you offer pickup and delivery?", "Yes. Drop-off in Sweetwater is free. Pickup and delivery beyond 5 miles is $50 round trip, and Knoxville, Maryville, Cleveland and Chattanooga are quoted by distance."),
- ("How far in advance should I book holiday wrapping?", "For Christmas, book by early November for corporate orders and by the first week of December for family bundles. Dates are reserved in order of deposit and December fills quickly. Rush orders under 72 hours may be available for a 25% surcharge."),
+ ("How far in advance should I book holiday wrapping?", "Holiday scheduling is open now, and the sooner you book, the better. Slots are held in the order deposits come in, and once they are full, dates and turnaround times cannot be guaranteed. Rush orders under 72 hours may be available for a 25% surcharge."),
  ("Can you match my company's brand colors?", "Absolutely. Send your logo and brand colors and we'll source ribbon to match and print custom logo gift tags. Corporate orders receive a photo mock-up for approval before the batch is wrapped."),
- ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is $15 per order, since every package is tracked and accounted for. Ask for the shipping address when you book."),
+ ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is a flat $15 per wrapping order, however many packages or stores they come from, since every package is tracked and accounted for. Ask for the shipping address when you book."),
  ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. They add from $15 each to the group price. Send a photo for an exact quote."),
- ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and reusing last year's gift boxes is another $10 off."),
+ ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and repeat clients who bring back last year's gift boxes get another $10 off."),
  ("How do you keep Santa gifts separate?", "Tell us which gifts are from Santa and we'll wrap them in a distinct paper, tag them separately and return them in their own labeled bag so nothing gets mixed up on Christmas Eve."),
  ("Can you wrap the gifts for an office party or white elephant?", "Yes, and it is one of our favorite jobs. Send every gift, in a bag with a note of who it is from if you like, and it all comes back wrapped so the surprise is real for everyone, including whoever organized it. We can wrap in one coordinated style or make every gift look different."),
  ("Do you wrap gift cards?", "Yes. A gift card in a plain envelope is easy to overlook. We dress it up in a small box with ribbon and a tag for $5, or build it into a themed wrap that hints at where the card is from."),
