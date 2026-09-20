@@ -389,7 +389,7 @@ home_body = f'''
       <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Gift cards, but better</h3><p>A gift card in an envelope gets lost on the table. In a small box with ribbon and a tag, or built into a themed wrap, it feels like a real gift.</p></div>
       <div class="card reveal"><div class="icon">{ICONS['star']}</div><h3>Themed to the party</h3><p>Jungle animals for the baby shower, flamingos for the pool party, camo for the hunter. Match the invitation, the nursery or the person.</p></div>
       <div class="card reveal"><div class="icon">{ICONS['heart']}</div><h3>Out-of-the-box builds</h3><p>A shirt and tie for Father's Day, a stack that looks like a cake, a box wrapped to look like the thing inside.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>Ship your online orders to us</h3><p>Have Amazon and retailer orders sent straight to Amiebeth. They arrive back wrapped, tagged and sorted.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>Ship your online orders to us</h3><p>Have Amazon and retailer orders sent straight to Amiebeth. Nothing lands on your porch for little eyes to find, you skip the pickup charge, and it all comes back wrapped, tagged and sorted. A small receiving fee covers the tracking and check-in.</p></div>
       <div class="card reveal"><div class="icon">{ICONS['calendar']}</div><h3>Teacher, coach and neighbor gifts</h3><p>The dozen small gifts every December that never get wrapped nicely. Add them to the same order.</p></div>
     </div>
   </div>
@@ -530,7 +530,7 @@ services_body = page_head("Occasions", "Gift wrapping for weddings, showers, bir
         <li><strong>Ribbon that suits the gift</strong> — grosgrain, satin, velvet, tulle, mesh or classic curling ribbon, chosen to match the look</li>
         <li><strong>Hand-tied bow</strong> — full, even and secured so it survives the trip</li>
         <li><strong>Gift tag</strong> — printed or handwritten with the recipient's name</li>
-        <li><strong>Crisp corners &amp; hidden tape</strong> — the details people notice</li>
+        <li><strong>Crisp corners &amp; a full bow</strong> — the details people notice</li>
       </ul>
     </div>
     <div class="reveal">
@@ -623,6 +623,7 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
         <tr><td><strong>Rush (under 72 hours)</strong></td><td>Subject to availability, especially in December</td><td>+25%</td></tr>
         <tr><td><strong>Gift card wrap</strong></td><td>A gift card dressed up in a small box with ribbon and a tag</td><td>$5 each</td></tr>
         <tr><td><strong>Oversized / odd shape</strong></td><td>Baskets, bikes, guitars, plush animals, anything without flat sides</td><td>from $15 each</td></tr>
+        <tr><td><strong>Ship-to-us receiving</strong></td><td>Online orders sent straight to Amiebeth, logged on arrival and checked against your list. Saves the pickup trip.</td><td>$15 / order</td></tr>
         <tr><td><strong>Pickup &amp; delivery</strong></td><td>Round trip beyond 5 miles of Sweetwater. Knoxville, Maryville, Cleveland and Chattanooga quoted by distance.</td><td>from $50</td></tr>
       </tbody>
     </table>
@@ -687,7 +688,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
         <div class="stat"><b>$80</b><span>for 11 to 25 gifts, materials included</span></div>
         <div class="stat"><b>$0</b><span>to drop off in Sweetwater</span></div>
       </div>
-      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each item is unboxed, checked against the packing slip, wrapped and delivered finished. No boxes piling up on your porch.</p></div>
+      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. No boxes on the porch for curious kids, and no pickup charge. Receiving is $15 per order.</p></div>
     </div>
   </div>
 </section>
@@ -751,7 +752,7 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
       <p>I work from my home in {CITY}, on I-75 between Knoxville and Chattanooga, which means I can collect from a Knoxville office in the morning and deliver to a Chattanooga venue the same week. Every gift is wrapped by hand, by me. What I love most is a theme: a shirt and tie for Dad, a jungle nursery for a baby shower, a whole Christmas in one family's colors. Classic paper-and-ribbon wraps are always on the menu too.</p>
       <h3>What I care about</h3>
       <ul>
-        <li><strong>The details.</strong> Hidden tape, aligned patterns, bows that stay full through the car ride.</li>
+        <li><strong>The details.</strong> A theme that lands, a bow that stays full through the car ride, a tag that makes them smile.</li>
         <li><strong>Your colors, not mine.</strong> Corporate orders match your brand. Family orders match your tree.</li>
         <li><strong>Being easy to work with.</strong> Prompt replies, clear pricing and delivery when promised.</li>
       </ul>
@@ -802,7 +803,7 @@ faqs = [
  ("Do you offer pickup and delivery?", "Yes. Drop-off in Sweetwater is free. Pickup and delivery beyond 5 miles is $50 round trip, and Knoxville, Maryville, Cleveland and Chattanooga are quoted by distance."),
  ("How far in advance should I book holiday wrapping?", "For Christmas, book by early November for corporate orders and by the first week of December for family bundles. Dates are reserved in order of deposit and December fills quickly. Rush orders under 72 hours may be available for a 25% surcharge."),
  ("Can you match my company's brand colors?", "Absolutely. Send your logo and brand colors and we'll source ribbon to match and print custom logo gift tags. Corporate orders receive a photo mock-up for approval before the batch is wrapped."),
- ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each item is unboxed, checked against your list, wrapped and delivered finished. Ask for the shipping address when you book."),
+ ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is $15 per order, since every package is tracked and accounted for. Ask for the shipping address when you book."),
  ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. They add from $15 each to the group price. Send a photo for an exact quote."),
  ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and reusing last year's gift boxes is another $10 off."),
  ("How do you keep Santa gifts separate?", "Tell us which gifts are from Santa and we'll wrap them in a distinct paper, tag them separately and return them in their own labeled bag so nothing gets mixed up on Christmas Eve."),
