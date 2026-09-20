@@ -689,7 +689,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
         <li>Gifts returned sorted by recipient, so stockings and tree are a five-minute job</li>
         <li>Pickup and delivery scheduled around your week, evenings and weekends included</li>
         <li>Teacher, coach and neighbor gifts included in the same order</li>
-        <li>One paper per person, so everyone knows whose is whose at a glance, or one matching look with name tags. Your call.</li>
+        <li>One paper per person, so everyone knows whose is whose at a glance, each one different but chosen to complement the others under the tree. Or one matching look with name tags. Your call.</li>
         <li>Coordinated palette so the tree looks styled, not random</li>
       </ul>
     </div>
@@ -828,7 +828,7 @@ faqs = [
  ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is a flat $15 per wrapping order, however many packages or stores they come from, since every package is tracked and accounted for. Ask for the shipping address when you book."),
  ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. They add from $15 each to the group price. Send a photo for an exact quote."),
  ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and repeat clients who bring back last year's gift boxes get another $10 off."),
- ("Can each family member have their own wrapping paper?", "Yes, and it is a favorite. Give each person their own paper and there is no squinting at tags on Christmas morning; everyone knows whose is whose at a glance. Or wrap everything in one matching look with name tags. Either way, tell us who gets what when you book."),
+ ("Can each family member have their own wrapping paper?", "Yes, and it is a favorite. Give each person their own paper and there is no squinting at tags on Christmas morning; everyone knows whose is whose at a glance, and the papers are chosen to complement each other so the tree still looks put together. Or wrap everything in one matching look with name tags. Either way, tell us who gets what when you book."),
  ("How do you keep Santa gifts separate?", "Tell us which gifts are from Santa and we'll wrap them in a distinct paper, tag them separately and return them in their own labeled bag so nothing gets mixed up on Christmas Eve."),
  ("Can you wrap the gifts for an office party or white elephant?", "Yes, and it is one of our favorite jobs. Send every gift, in a bag with a note of who it is from if you like, and it all comes back wrapped so the surprise is real for everyone, including whoever organized it. We can wrap in one coordinated style or make every gift look different."),
  ("Do you wrap gift cards?", "Yes. A gift card in a plain envelope is easy to overlook. We dress it up in a small box with ribbon and a tag for $5, or build it into a themed wrap that hints at where the card is from."),
