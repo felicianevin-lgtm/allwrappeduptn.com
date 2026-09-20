@@ -64,6 +64,6 @@ setting.
 
 ## Things to confirm with Amiebeth
 
-- Prices and package contents in `build.py` are proposed starting points.
-- Business hours (currently Mon–Sat 9–6) and the 15-mile free delivery radius.
+- Prices in `build.py`: Classic group tiers ($60 / $80 / $100 / from $120) and the three discounts follow the 2024 pricing guide Felicia supplied. Signature custom starting points ($15 / $22 / $32), oversized +$15, gift card $5, corporate per-gift rates, turnaround times, deposit and rush terms are proposals to confirm with Amiebeth.
+- No public hours on the site (Amiebeth works full-time; wrapping is by appointment). Pickup & delivery is from $50 round trip beyond 5 miles.
 - Whether to show the studio street address (currently hidden: city + ZIP only).

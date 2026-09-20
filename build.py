@@ -191,7 +191,7 @@ def layout(page):
     </div>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> {BIZ} — {TAG}. {OWNER}, {CITY}, Tennessee.</span>
-      <span>Home-based studio · By appointment · Pickup &amp; delivery available</span>
+      <span>Home-based in Sweetwater · By appointment · Pickup &amp; delivery available</span>
     </div>
   </div>
 </footer>
@@ -219,7 +219,6 @@ LOCAL_BUSINESS_LD = f'''<script type="application/ld+json">
   "address": {{"@type": "PostalAddress", "addressLocality": "{CITY}", "addressRegion": "{REGION}", "postalCode": "{ZIP}", "addressCountry": "US"}},
   "geo": {{"@type": "GeoCoordinates", "latitude": 35.6017, "longitude": -84.4613}},
   "areaServed": [{",".join(f'{{"@type":"City","name":"{c}"}}' for c in AREA)}],
-  "openingHoursSpecification": [{{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"], "opens": "09:00", "closes": "18:00"}}],
   "knowsAbout": ["gift wrapping", "corporate gifts", "holiday gift wrapping", "wedding gift wrapping", "baby shower gifts", "bridal shower gifts"],
   "hasOfferCatalog": {{
     "@type": "OfferCatalog", "name": "Gift wrapping services",
@@ -253,17 +252,21 @@ def estimator(compact=False):
   <div>
     <span class="kicker">Instant estimate</span>
     <h3>Estimate your order</h3>
-    <p class="note">An approximate range. Volume discounts begin at 25 gifts. Your written quote follows a short conversation about paper, ribbon and delivery.</p>
-    <div class="field"><label for="e-small">Small gifts (jewelry, books, candles, gift cards) — <span data-count="small">0</span></label><input type="range" id="e-small" name="small" min="0" max="100" value="{'4' if compact else '0'}"></div>
-    <div class="field"><label for="e-medium">Medium gifts (sweaters, games, shoebox size) — <span data-count="medium">0</span></label><input type="range" id="e-medium" name="medium" min="0" max="100" value="{'6' if compact else '0'}"></div>
-    <div class="field"><label for="e-large">Large gifts (small appliances, big toys) — <span data-count="large">0</span></label><input type="range" id="e-large" name="large" min="0" max="50" value="{'2' if compact else '0'}"></div>
-    <div class="field"><label for="e-over">Oversized or odd shapes (baskets, bikes, bulky items) — <span data-count="oversized">0</span></label><input type="range" id="e-over" name="oversized" min="0" max="20" value="0"></div>
+    <p class="note">Classic wrapping is priced by the group, with all materials included. Signature custom wraps are quoted by the gift.</p>
+    <div class="field"><label for="e-gifts">Number of gifts — <span data-count="gifts">0</span></label><input type="range" id="e-gifts" name="gifts" min="0" max="120" value="{'18' if compact else '0'}"></div>
+    <div class="field"><label for="e-over">Oversized or odd shapes among them (baskets, bikes, bulky items) — <span data-count="oversized">0</span></label><input type="range" id="e-over" name="oversized" min="0" max="20" value="0"></div>
     <div class="field"><span class="hint" style="font-weight:800;color:var(--ink-soft)">Add-ons</span>
       <div class="chips">
         <label class="chip"><input type="checkbox" name="addon_notes"><span>Handwritten note cards</span></label>
-        <label class="chip"><input type="checkbox" name="addon_logo"><span>Custom logo gift tags</span></label>
-        <label class="chip"><input type="checkbox" name="addon_luxe"><span>Luxe ribbon upgrade</span></label>
+        <label class="chip"><input type="checkbox" name="addon_luxe"><span>Premium ribbon &amp; embellishments</span></label>
+        <label class="chip"><input type="checkbox" name="delivery"><span>Pickup &amp; delivery</span></label>
         <label class="chip"><input type="checkbox" name="rush"><span>Rush (under 72 hrs)</span></label>
+      </div></div>
+    <div class="field"><span class="hint" style="font-weight:800;color:var(--ink-soft)">Discounts</span>
+      <div class="chips">
+        <label class="chip"><input type="checkbox" name="disc_nobows"><span>Just wrapping, no bows</span></label>
+        <label class="chip"><input type="checkbox" name="disc_boxed"><span>Everything boxed &amp; ready</span></label>
+        <label class="chip"><input type="checkbox" name="disc_reuse"><span>Reusing last year's boxes</span></label>
       </div></div>
   </div>
   <div class="estimate-out">
@@ -272,7 +275,7 @@ def estimator(compact=False):
     <span class="save" data-save hidden></span>
     <p class="breakdown" data-breakdown>Add a few gifts to see an estimate.</p>
     <a class="btn btn-primary" data-quote-link href="contact.html">Request a written quote</a>
-    <p class="fineprint" style="margin-top:12px">Pickup &amp; delivery is free within 15 miles of Sweetwater and quoted for Knoxville and Chattanooga.</p>
+    <p class="fineprint" style="margin-top:12px">Drop-off in Sweetwater is free. Pickup &amp; delivery is from $50 round trip and quoted by distance for Knoxville and Chattanooga.</p>
   </div>
 </form>'''
 
@@ -286,7 +289,7 @@ home_body = f'''
     <div class="reveal in">
       <span class="eyebrow">Sweetwater, Tennessee · Knoxville to Chattanooga</span>
       <h1>Professional gift wrapping for <em>businesses and busy families</em></h1>
-      <p class="lede">Hand-wrapped gifts with coordinated paper, real ribbon and hand-tied bows. Corporate holiday orders, client gifts and family celebrations, collected and delivered across East Tennessee.</p>
+      <p class="lede">Themed, custom and classic gift wrapping, from a shirt-and-tie for Dad to a whole Christmas in one family's colors. Corporate orders, client gifts and family celebrations, collected and delivered across East Tennessee.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="contact.html">Request a free quote</a>
         <a class="btn btn-secondary btn-lg" href="pricing.html">See packages &amp; pricing</a>
@@ -294,11 +297,11 @@ home_body = f'''
       <ul class="hero-proof">
         <li>{ICONS['check']} Pickup &amp; delivery available</li>
         <li>{ICONS['check']} Bulk corporate orders welcome</li>
-        <li>{ICONS['check']} Every gift tagged &amp; ready to give</li>
+        <li>{ICONS['check']} Themed &amp; custom wraps are the specialty</li>
       </ul>
     </div>
     <div class="hero-art">
-      <div class="hero-photo"><img src="assets/photos/hero-navy-chiffon.webp" alt="Gift wrapped in navy paper with a navy satin and pale blue chiffon bow by All Wrapped Up" width="1105" height="1383"></div>
+      <div class="hero-photo"><img src="assets/photos/hero-navy-chiffon.webp" alt="Gift wrapped in navy paper with a navy satin and pale blue chiffon bow by All Wrapped Up" width="1200" height="1500"></div>
       <div class="hero-badge"><strong>Now booking</strong>Holiday 2026 orders</div>
     </div>
   </div>
@@ -330,9 +333,9 @@ home_body = f'''
     <div class="section-head reveal"><span class="kicker">Why hire a professional</span><h2>Presentation is part of the gift</h2><p>The average household spends six or more hours wrapping each December. For a business, the job is measured in days and usually lands on the person who can least spare them.</p></div>
     <div class="grid grid-4">
       <div class="card reveal"><div class="icon">{ICONS['clock']}</div><h3>Reclaim your time</h3><p>Hand over the entire order and spend the season with the people the gifts are for.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['sparkle']}</div><h3>A finished look</h3><p>Crisp corners, concealed seams, real ribbon and hand-tied bows. Every gift is tagged and ready to present.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['sparkle']}</div><h3>Made to be remembered</h3><p>Themed builds and out-of-the-box ideas people photograph before they open, or a clean classic wrap. Every gift tagged and ready to present.</p></div>
       <div class="card reveal"><div class="icon">{ICONS['building']}</div><h3>On brand, every time</h3><p>Consistent wrapping across every gift in the order, in your colors, with your logo on the tag.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>Pickup and delivery</h3><p>Collection and delivery along the I-75 corridor from Knoxville to Chattanooga, or drop off at the Sweetwater studio.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>Pickup and delivery</h3><p>Collection and delivery along the I-75 corridor from Knoxville to Chattanooga, or drop off in Sweetwater by appointment.</p></div>
     </div>
   </div>
 </section>
@@ -343,7 +346,7 @@ home_body = f'''
     <div class="steps">
       <div class="step reveal"><h3>Request a quote</h3><p>Send a gift count, approximate sizes and your date through the quote form, or call or text. Quotes are returned within one business day.</p></div>
       <div class="step reveal"><h3>Choose a style</h3><p>Select a curated palette or send brand colors. Paper, ribbon, tags and embellishments are coordinated for you.</p></div>
-      <div class="step reveal"><h3>Drop off or schedule pickup</h3><p>Bring gifts to the Sweetwater studio, or arrange collection from your home or office.</p></div>
+      <div class="step reveal"><h3>Drop off or schedule pickup</h3><p>Drop off in Sweetwater by appointment, or arrange collection from your home or office.</p></div>
       <div class="step reveal"><h3>Delivered on your date</h3><p>Every gift wrapped, tagged and returned when promised. Corporate orders can be delivered directly to the venue.</p></div>
     </div>
   </div>
@@ -351,7 +354,7 @@ home_body = f'''
 
 <section class="pinkbg">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Transparent pricing</span><h2>Per-gift pricing with volume discounts</h2><p>Every price includes premium paper, coordinating ribbon, a hand-tied bow and a gift tag. Adjust the sliders for an instant estimate.</p></div>
+    <div class="section-head reveal"><span class="kicker">Transparent pricing</span><h2>Group pricing, materials included</h2><p>Classic wrapping is priced by the number of gifts, with paper, ribbon, bows and tags included. Signature custom wraps are quoted by the gift. Slide to see an estimate.</p></div>
     {estimator(compact=True)}
     <p style="text-align:center;margin-top:22px"><a class="btn btn-secondary" href="pricing.html">Full price list &amp; packages</a></p>
   </div>
@@ -359,26 +362,40 @@ home_body = f'''
 
 <section>
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Recent work</span><h2>Styles for every occasion</h2><p>Playful or polished, every gift gets real ribbon, a hand-tied bow and a finishing detail chosen for the recipient.</p></div>
+    <div class="section-head reveal"><span class="kicker">Recent work</span><h2>Styles for every occasion</h2><p>Signature custom builds and classic wraps, all from real orders.</p></div>
     <div class="gallery">
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-rainbow-box.webp" alt="Large box in watercolor-dot paper with aqua and confetti ribbon" width="900" height="900" loading="lazy"><figcaption>Watercolor dots, layered ribbon</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-hannah-check.webp" alt="Buffalo check gift with black yarn, burlap ribbon and Scrabble-tile name tag" width="900" height="900" loading="lazy"><figcaption>Personalized name tags</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="900" height="900" loading="lazy"><figcaption>Gold mesh and glitter bow</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-western-rose.webp" alt="Coral western paper with brown stitched ribbon and a pink fabric rose" width="900" height="900" loading="lazy"><figcaption>Fabric rose finish</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-flamingo.webp" alt="Flamingo box with pink and orange tulle bow" width="900" height="900" loading="lazy"><figcaption>Tulle and satin</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-dad-shirt.webp" alt="Gift wrapped to look like a striped collared shirt with buttons and a bow tie" width="900" height="900" loading="lazy"><figcaption>Shirt-and-tie wrap for Dad</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-purple-organza.webp" alt="Purple snowflake paper with silver-edged organza bow" width="900" height="900" loading="lazy"><figcaption>Wired organza bow</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-pompom-stack.webp" alt="Two stacked boxes in red Happy Holidays paper with a pom-pom garland" width="900" height="900" loading="lazy"><figcaption>Pom-pom garland stack</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-nutcracker.webp" alt="Nutcracker print paper with sage green glitter ribbon" width="900" height="900" loading="lazy"><figcaption>Nutcracker print, sage ribbon</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-bee-stack.webp" alt="Two-tier stacked gift in bumblebee paper with buffalo check ribbon" width="900" height="900" loading="lazy"><figcaption>Stacked two-tier wrap</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-snowflake-cube.webp" alt="Oversized cube gift in purple snowflake paper with silver organza bow and snowflake" width="900" height="900" loading="lazy"><figcaption>Oversized, finished in silver</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-paisley.webp" alt="Teal paisley paper with pink and blue curling ribbon and a script Happy Birthday topper" width="900" height="900" loading="lazy"><figcaption>Script birthday topper</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-dad-shirt.webp" alt="Gift wrapped to look like a striped collared shirt with wooden buttons and a bow tie" width="1200" height="1200" loading="lazy"><figcaption>Shirt-and-tie build for Dad</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-bee-bow.webp" alt="Yellow bumblebee paper with a huge honeycomb, buffalo check and black tulle bow" width="1200" height="1200" loading="lazy"><figcaption>Bee-themed statement bow</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-rainbow-box.webp" alt="Large box in watercolor-dot paper with aqua and confetti ribbon" width="1200" height="1200" loading="lazy"><figcaption>Watercolor dots, layered ribbon</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-hannah-check.webp" alt="Buffalo check gift with black yarn, burlap ribbon and Scrabble-tile name tag" width="1200" height="1200" loading="lazy"><figcaption>Scrabble-tile name tag</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-flamingo.webp" alt="Flamingo box with pink and orange tulle bow" width="1200" height="1200" loading="lazy"><figcaption>Flamingos, tulle and satin</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="1200" height="1200" loading="lazy"><figcaption>Gold mesh and glitter bow</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-western-rose.webp" alt="Coral western paper with brown stitched ribbon and a pink fabric rose" width="1200" height="1200" loading="lazy"><figcaption>Western paper, fabric rose</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-baby-shower.webp" alt="Three baby shower gifts in jungle-animal paper with raffia, gold and purple bows and teething toys tucked in" width="1200" height="1200" loading="lazy"><figcaption>Themed baby shower set</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-snowflake-bow.webp" alt="Purple snowflake paper with a silver-edged organza bow" width="1200" height="1200" loading="lazy"><figcaption>Wired organza bow</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-llama-red-bow.webp" alt="White llama-print paper with a black llama silhouette and a big red bow" width="1200" height="1200" loading="lazy"><figcaption>Llama box, classic red bow</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-pompom-stack.webp" alt="Two stacked boxes in red Happy Holidays paper with a pom-pom garland" width="1200" height="1200" loading="lazy"><figcaption>Pom-pom garland stack</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-paisley.webp" alt="Teal paisley paper with pink and blue curling ribbon and a script Happy Birthday topper" width="1200" height="1200" loading="lazy"><figcaption>Script birthday topper</figcaption></figure>
     </div>
-    <p class="fineprint" style="text-align:center">All photographs are of real orders wrapped in the Sweetwater studio.</p>
+    <p class="fineprint" style="text-align:center">Every photograph is a real order, wrapped by Amiebeth.</p>
   </div>
 </section>
 
 <section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Ideas</span><h2>Ways people use us</h2><p>Some of the most fun orders started with "can you do this?"</p></div>
+    <div class="grid grid-3">
+      <div class="card reveal"><div class="icon">{ICONS['gift']}</div><h3>The office white elephant</h3><p>Send every gift and it all comes back wrapped, so the exchange is a true surprise for everyone, including the organizer.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Gift cards, but better</h3><p>A gift card in an envelope gets lost on the table. In a small box with ribbon and a tag, or built into a themed wrap, it feels like a real gift.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['star']}</div><h3>Themed to the party</h3><p>Jungle animals for the baby shower, flamingos for the pool party, camo for the hunter. Match the invitation, the nursery or the person.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['heart']}</div><h3>Out-of-the-box builds</h3><p>A shirt and tie for Father's Day, a stack that looks like a cake, a box wrapped to look like the thing inside.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>Ship your online orders to us</h3><p>Have Amazon and retailer orders sent straight to Amiebeth. They arrive back wrapped, tagged and sorted.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['calendar']}</div><h3>Teacher, coach and neighbor gifts</h3><p>The dozen small gifts every December that never get wrapped nicely. Add them to the same order.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Our standard</span><h2>What every order includes</h2></div>
     <div class="promise reveal">
@@ -408,7 +425,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
       <h2>Your team has better uses for the week of the event</h2>
       <p class="lede" style="font-size:18px">Corporate gifting too often ends with a conference room, mismatched paper and a late night for whoever drew the short straw. We take the entire job off your plate so the gifts look intentional and your staff stay on their own work.</p>
       <ul class="checklist">
-        <li>Holiday party gifts and door prizes</li>
+        <li>Holiday party gifts, door prizes and white elephant exchanges</li>
         <li>Client and referral-partner appreciation gifts</li>
         <li>Employee recognition, welcome kits and milestone gifts</li>
         <li>Conference swag, real-estate closing gifts, teacher appreciation</li>
@@ -418,30 +435,30 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
     <div class="reveal">
       <div class="stats">
         <div class="stat"><b>25+</b><span>gifts for volume pricing</span></div>
-        <div class="stat"><b>1</b><span>invoice, W-9 on request</span></div>
+        <div class="stat"><b>1</b><span>itemized invoice</span></div>
         <div class="stat"><b>5</b><span>business-day standard turnaround</span></div>
       </div>
-      <figure class="photo-card reveal"><img src="assets/photos/corp-purple-set.webp" alt="Three coordinated gifts in purple snowflake paper with silver ribbon and matching tags" width="1400" height="933" loading="lazy"><figcaption>One palette, three sizes, matching tags: a coordinated set for a client list.</figcaption></figure>
+      <figure class="photo-card reveal"><img src="assets/photos/land-candy-cane-display.webp" alt="A holiday order in candy-stripe and chalkboard papers with tulle-wrapped towers, each gift tagged by recipient" width="1400" height="933" loading="lazy"><figcaption>One order, one look: candy-stripe and chalkboard papers, every gift tagged by recipient.</figcaption></figure>
       <div class="callout"><span class="h">Branded presentation</span><p>Send your logo and brand colors. We source ribbon to match and print custom gift tags so every gift reads as yours.</p></div>
     </div>
   </div>
 </section>
 
 <section class="banner">
-  <img src="assets/photos/wide-holiday-display.webp" alt="A table full of coordinated holiday gifts in candy-stripe and chalkboard papers with tulle-wrapped towers" width="1800" height="771" loading="lazy">
+  <img src="assets/photos/wide-holiday-display.webp" alt="A table full of coordinated holiday gifts in candy-stripe and chalkboard papers with tulle-wrapped towers" width="1400" height="933" loading="lazy">
   <div class="wrap banner-text reveal"><span class="kicker">Volume orders</span><h2>Dozens of gifts, one cohesive look</h2><p>Coordinated papers, ribbons and tags across an entire order, delivered sorted and ready to hand out.</p></div>
 </section>
 
 <section class="alt">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Corporate packages</span><h2>Volume pricing that gets better as the order grows</h2><p>Every gift includes premium paper, coordinating ribbon, a hand-tied bow and a gift tag. Final per-gift price depends on sizes and finishes.</p></div>
+    <div class="section-head reveal"><span class="kicker">Corporate packages</span><h2>Volume pricing that gets better as the order grows</h2><p>Corporate rates are for Classic wraps in your colors. Themed or custom builds are quoted separately. Final per-gift price depends on sizes and finishes.</p></div>
     <div class="pricing">
       <div class="plan reveal"><span class="name">Starter</span><h3>Team gifts</h3><p class="who">25 – 99 gifts · small offices, departments, client lists</p><div class="price">from $9<small>/gift</small></div><p class="per">10% off à la carte pricing</p>
-        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Free pickup &amp; delivery within 15 miles</li><li>5-business-day turnaround</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
+        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Pickup &amp; delivery from $50 round trip</li><li>5-business-day turnaround</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
       <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Team</span><h3>Holiday party</h3><p class="who">100 – 249 gifts · company parties, client appreciation events</p><div class="price">from $8<small>/gift</small></div><p class="per">20% off à la carte pricing</p>
-        <ul><li>Up to two wrap styles (for example, staff and VIP)</li><li>Custom logo gift tags included</li><li>Brand-color ribbon sourced to match</li><li>Free pickup &amp; delivery, Knoxville to Chattanooga</li><li>Delivery straight to the venue on party day</li></ul><a class="btn btn-primary" href="contact.html?type=corporate">Quote the Team package</a></div>
+        <ul><li>Up to two wrap styles (for example, staff and VIP)</li><li>Custom logo gift tags included</li><li>Brand-color ribbon sourced to match</li><li>Pickup &amp; delivery to Knoxville or Chattanooga, quoted by trip</li><li>Delivery straight to the venue on party day</li></ul><a class="btn btn-primary" href="contact.html?type=corporate">Quote the Team package</a></div>
       <div class="plan reveal"><span class="name">Enterprise</span><h3>Large &amp; multi-site</h3><p class="who">250+ gifts · multiple offices, franchise groups, hospital systems</p><div class="price">Custom<small> quote</small></div><p class="per">25%+ volume savings</p>
-        <ul><li>Dedicated production timeline &amp; check-ins</li><li>Multi-location delivery scheduling</li><li>Optional on-site Wrap Bar at your event</li><li>Net-30 invoicing available for established accounts</li></ul><a class="btn btn-gold" href="contact.html?type=corporate">Talk to us about Enterprise</a></div>
+        <ul><li>Dedicated production timeline &amp; check-ins</li><li>Multi-location delivery scheduling</li><li>Mixed sizes and odd shapes handled in the same order</li><li>Invoicing for business accounts</li></ul><a class="btn btn-gold" href="contact.html?type=corporate">Talk to us about Enterprise</a></div>
     </div>
     <p class="fineprint">Prices are starting points for small and medium gifts. Large and oversized items are quoted individually. Rush orders under 72 hours add 25%. Tennessee sales tax applies where required.</p>
   </div>
@@ -453,7 +470,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
     <div class="grid grid-3">
       <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Logo gift tags</h3><p>Your logo and a message on a heavy card-stock tag, tied on with ribbon. From $1.50 per gift.</p></div>
       <div class="card reveal"><div class="icon">{ICONS['heart']}</div><h3>Handwritten notes</h3><p>Personal notes handwritten from your message list, so each recipient gets something that feels one-to-one. $2 per gift.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['sparkle']}</div><h3>On-site Wrap Bar</h3><p>A styled wrapping station at your holiday party. Guests bring gifts, we wrap them while they mingle. From $350 for three hours.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['gift']}</div><h3>White elephant &amp; party gifts</h3><p>Send everything for the office party or white elephant exchange and it all comes back wrapped, so the surprise is real for everyone, including the person who organized it.</p></div>
     </div>
   </div>
 </section>
@@ -465,7 +482,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
       <div class="step reveal"><h3>Quote</h3><p>Send gift count, sizes and your event date. You'll get a written quote within one business day.</p></div>
       <div class="step reveal"><h3>Style approval</h3><p>We send a photographed sample in your colors for approval or revision.</p></div>
       <div class="step reveal"><h3>Pickup</h3><p>We collect gifts from your office, or receive shipments from your vendors directly.</p></div>
-      <div class="step reveal"><h3>Wrapping</h3><p>Wrapped in the Sweetwater studio, boxed and labeled by recipient or department.</p></div>
+      <div class="step reveal"><h3>Wrapping</h3><p>Wrapped by hand in Sweetwater, boxed and labeled by recipient or department.</p></div>
       <div class="step reveal"><h3>Delivery</h3><p>Delivered to your office or venue on the date you choose, with one itemized invoice.</p></div>
     </div>
   </div>
@@ -489,16 +506,16 @@ pages.append(dict(slug="corporate-gift-wrapping.html", crumb="Corporate gift wra
 
 # SERVICES / OCCASIONS
 services_body = page_head("Occasions", "Gift wrapping for weddings, showers, birthdays, anniversaries &amp; holidays",
-  "One gift or one hundred. Every occasion receives coordinated paper, real ribbon, a hand-tied bow and a tag, wrapped by hand in Sweetwater, Tennessee.", "Occasions") + f'''
+  "One gift or one hundred, themed to the party or the person. Classic wraps and signature custom builds, wrapped by hand in Sweetwater, Tennessee.", "Occasions") + f'''
 <section>
   <div class="wrap">
     <div class="occasions">
-      <div class="occasion reveal" id="weddings"><img src="assets/photos/sq-wedding-navy.webp" alt="Navy gift with navy satin and pale blue chiffon bow" width="900" height="900" loading="lazy"><div class="icon">{ICONS['heart']}</div><h3>Weddings</h3><p>Bridesmaid and groomsmen gifts, parent gifts, welcome bags for out-of-town guests and the gift you're bringing to someone else's big day.</p><ul><li>Ribbon matched to your wedding palette</li><li>Welcome-bag assembly and tagging</li><li>Delivery to the venue or hotel block</li></ul></div>
-      <div class="occasion reveal" id="bridal-showers"><img src="assets/photos/sq-bridal-dots.webp" alt="Watercolor-dot paper with aqua and confetti ribbon bow" width="900" height="900" loading="lazy"><div class="icon">{ICONS['sparkle']}</div><h3>Bridal showers</h3><p>Host gifts, favors and shower gifts wrapped to match the theme, so the gift table looks styled and photographs beautifully.</p><ul><li>Favor wrapping in bulk</li><li>Coordinated gift-table display</li><li>Registry gifts received and wrapped for you</li></ul></div>
-      <div class="occasion reveal" id="baby-showers"><img src="assets/photos/sq-baby-shower.webp" alt="Three baby shower gifts in jungle-animal paper with raffia, gold and purple bows" width="900" height="900" loading="lazy"><div class="icon">{ICONS['gift']}</div><h3>Baby showers</h3><p>Large boxes, unusual shapes and the smallest keepsakes, wrapped in soft palettes or the nursery colors the parents have chosen.</p><ul><li>Oversized item specialists</li><li>Gender-reveal wrapping handled discreetly</li><li>Diaper cakes and gift baskets finished</li></ul></div>
-      <div class="occasion reveal" id="birthdays"><img src="assets/photos/sq-paisley.webp" alt="Teal paisley birthday gift with curling ribbon and script topper" width="900" height="900" loading="lazy"><div class="icon">{ICONS['star']}</div><h3>Birthdays</h3><p>Milestone birthdays, children's parties and surprise gifts. Bright and playful or quietly elegant, wrapped to suit the recipient.</p><ul><li>Durable wrapping that travels well</li><li>Themed paper and ribbon</li><li>Same-week turnaround when available</li></ul></div>
-      <div class="occasion reveal" id="anniversaries"><img src="assets/photos/sq-western-rose.webp" alt="Coral paper with stitched brown ribbon and a fabric rose" width="900" height="900" loading="lazy"><div class="icon">{ICONS['heart']}</div><h3>Anniversaries</h3><p>Luxury paper, double-satin ribbon and a handwritten card, finished well ahead of the date.</p><ul><li>Luxury finishes and embellishments</li><li>Handwritten note cards</li><li>Discreet pickup and delivery</li></ul></div>
-      <div class="occasion reveal" id="holidays"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="900" height="900" loading="lazy"><div class="icon">{ICONS['calendar']}</div><h3>Holidays</h3><p>Christmas, Hanukkah, Valentine's Day, Mother's and Father's Day, Easter and graduation. Seasonal palettes or your own family tradition.</p><ul><li>Whole-family Christmas packages</li><li>Santa paper kept separate</li><li><a href="holiday-gift-wrapping.html">See holiday packages →</a></li></ul></div>
+      <div class="occasion reveal" id="weddings"><img src="assets/photos/sq-wedding-navy.webp" alt="Navy gift with navy satin and pale blue chiffon bow" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['heart']}</div><h3>Weddings</h3><p>Bridesmaid and groomsmen gifts, parent gifts, welcome bags for out-of-town guests and the gift you're bringing to someone else's big day.</p><ul><li>Ribbon matched to your wedding palette</li><li>Welcome-bag assembly and tagging</li><li>Delivery to the venue or hotel block</li></ul></div>
+      <div class="occasion reveal" id="bridal-showers"><img src="assets/photos/sq-rainbow-dots.webp" alt="Watercolor-dot paper with aqua and confetti ribbon bow" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['sparkle']}</div><h3>Bridal showers</h3><p>Host gifts, favors and shower gifts wrapped to match the theme, so the gift table looks styled and photographs beautifully.</p><ul><li>Favor wrapping in bulk</li><li>Coordinated gift-table display</li><li>Registry gifts received and wrapped for you</li></ul></div>
+      <div class="occasion reveal" id="baby-showers"><img src="assets/photos/sq-baby-shower.webp" alt="Three baby shower gifts in jungle-animal paper with raffia, gold and purple bows" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['gift']}</div><h3>Baby showers</h3><p>Large boxes, unusual shapes and the smallest keepsakes, wrapped to the shower theme or the nursery colors the parents have chosen.</p><ul><li>Oversized item specialists</li><li>Gender-reveal wrapping handled discreetly</li><li>Diaper cakes and gift baskets finished</li></ul></div>
+      <div class="occasion reveal" id="birthdays"><img src="assets/photos/sq-paisley.webp" alt="Teal paisley birthday gift with curling ribbon and script topper" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['star']}</div><h3>Birthdays</h3><p>Milestone birthdays, children's parties and surprise gifts. Themed to the party or the person, from a llama box with a big red bow to a shirt and tie for Dad.</p><ul><li>Durable wrapping that travels well</li><li>Themed paper and ribbon</li><li>Same-week turnaround when available</li></ul></div>
+      <div class="occasion reveal" id="anniversaries"><img src="assets/photos/sq-western-rose.webp" alt="Coral paper with stitched brown ribbon and a fabric rose" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['heart']}</div><h3>Anniversaries</h3><p>Elegant paper, satin ribbon and a handwritten card, finished well ahead of the date.</p><ul><li>Premium finishes and embellishments</li><li>Handwritten note cards</li><li>Discreet pickup and delivery</li></ul></div>
+      <div class="occasion reveal" id="holidays"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="1200" height="1200" loading="lazy"><div class="icon">{ICONS['calendar']}</div><h3>Holidays</h3><p>Christmas, Hanukkah, Valentine's Day, Mother's and Father's Day, Easter and graduation. Seasonal palettes or your own family tradition.</p><ul><li>Whole-family Christmas packages</li><li>Santa paper kept separate</li><li><a href="holiday-gift-wrapping.html">See holiday packages →</a></li></ul></div>
     </div>
   </div>
 </section>
@@ -509,8 +526,8 @@ services_body = page_head("Occasions", "Gift wrapping for weddings, showers, bir
       <span class="kicker">What's included</span>
       <h2>Every gift, every time</h2>
       <ul class="checklist">
-        <li><strong>Premium paper</strong> — heavyweight, opaque, coordinated to the occasion or your colors</li>
-        <li><strong>Real ribbon</strong> — grosgrain, satin, velvet or our signature polka dot, never curling plastic</li>
+        <li><strong>Coordinated paper</strong> — matched to the occasion, the theme or your colors</li>
+        <li><strong>Ribbon that suits the gift</strong> — grosgrain, satin, velvet, tulle, mesh or classic curling ribbon, chosen to match the look</li>
         <li><strong>Hand-tied bow</strong> — full, even and secured so it survives the trip</li>
         <li><strong>Gift tag</strong> — printed or handwritten with the recipient's name</li>
         <li><strong>Crisp corners &amp; hidden tape</strong> — the details people notice</li>
@@ -533,34 +550,50 @@ pages.append(dict(slug="services.html", crumb="Occasions",
 
 # PRICING
 pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
-  "Clear per-gift pricing, family bundles and corporate volume rates. Every gift includes premium paper, coordinating ribbon, a hand-tied bow and a gift tag.", "Pricing") + f'''
+  "Two levels of wrapping, priced clearly. Classic wrapping is priced by the group with all materials included. Signature custom wraps are quoted by the gift, because the materials and the time are more.", "Pricing") + f'''
 <section>
   <div class="wrap">
-    <div class="section-head left reveal"><span class="kicker">À la carte</span><h2>Per-gift pricing by size</h2></div>
+    <div class="section-head left reveal"><span class="kicker">Classic wrap</span><h2>Priced by the group, all materials included</h2><p>Paper, coordinating ribbon, a bow and a gift tag on every gift, in any color scheme or theme you like. Standard-size gifts; oversized items are quoted.</p></div>
     <table class="sizes reveal">
-      <thead><tr><th>Size</th><th>Typical gifts</th><th>Price</th></tr></thead>
+      <thead><tr><th>Group</th><th>Good for</th><th>Price</th></tr></thead>
       <tbody>
-        <tr><td><strong>Small</strong><small>up to 8" × 8" × 4"</small></td><td>Jewelry, books, candles, gift cards, cosmetics, mugs</td><td>$6</td></tr>
-        <tr><td><strong>Medium</strong><small>up to 16" × 12" × 8"</small></td><td>Sweaters, board games, shoeboxes, small electronics, blankets</td><td>$10</td></tr>
-        <tr><td><strong>Large</strong><small>up to 24" × 18" × 14"</small></td><td>Small appliances, toys, tool sets, gift baskets in boxes</td><td>$16</td></tr>
-        <tr><td><strong>Oversized / odd shape</strong><small>anything bigger or without flat sides</small></td><td>Bikes, strollers, guitars, plush animals, baskets, bottles</td><td>from $25</td></tr>
+        <tr><td><strong>Small group</strong><small>1 – 10 gifts</small></td><td>One person's list, a shower gift or two, the special few</td><td>$60</td></tr>
+        <tr><td><strong>Medium group</strong><small>11 – 25 gifts</small></td><td>The whole family, grandparents and teachers included</td><td>$80</td></tr>
+        <tr><td><strong>Large group</strong><small>26 – 50 gifts</small></td><td>Large households and the home everyone gathers in</td><td>$100</td></tr>
+        <tr><td><strong>Extra large group</strong><small>51+ gifts</small></td><td>Big families, class parties, office exchanges</td><td>from $120</td></tr>
       </tbody>
     </table>
-    <p class="fineprint">Prices include premium paper, coordinating ribbon, hand-tied bow and gift tag. Bring your own paper and ribbon for $2 off per gift. Gift boxes and tissue available at cost.</p>
+    <p class="fineprint">Prices include all wrapping materials. Oversized and odd-shaped items add from $15 each. Gift cards can be dressed up in a small box with ribbon and a tag for $5 each.</p>
   </div>
 </section>
 
 <section class="alt">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Family packages</span><h2>Holiday bundles for households</h2><p>Mixed sizes welcome. Bundles assume a typical mix of small and medium gifts with a few large ones.</p></div>
-    <div class="pricing">
-      <div class="plan reveal"><span class="name">Stocking Saver</span><h3>10 gifts</h3><p class="who">A few special gifts or one person's whole list</p><div class="price">$79</div><p class="per">about $7.90 per gift</p>
-        <ul><li>Coordinated palette of your choice</li><li>Gift tags with names</li><li>Studio drop-off &amp; pickup in Sweetwater</li><li>3-business-day turnaround</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book Stocking Saver</a></div>
-      <div class="plan featured reveal"><span class="flag">Best value</span><span class="name">Holiday Hero</span><h3>25 gifts</h3><p class="who">The whole family, grandparents and teachers included</p><div class="price">$189</div><p class="per">about $7.56 per gift</p>
-        <ul><li>Up to two palettes (for example, Santa paper + family paper)</li><li>Handwritten gift tags</li><li>Free pickup &amp; delivery within 15 miles</li><li>Gifts returned sorted by recipient</li><li>Priority December scheduling</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book Holiday Hero</a></div>
-      <div class="plan reveal"><span class="name">Whole Tree</span><h3>50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$349</div><p class="per">about $6.98 per gift</p>
-        <ul><li>Up to three palettes</li><li>Handwritten tags &amp; note cards</li><li>Free pickup &amp; delivery, Knoxville to Chattanooga</li><li>Two pickups if you shop in rounds</li><li>First pick of December dates</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book Whole Tree</a></div>
-    </div>
+    <div class="section-head left reveal"><span class="kicker">Signature custom wrap</span><h2>Themed and custom builds, quoted by the gift</h2><p>The shirt-and-tie for Dad, the tulle-topped baby shower set, the box that matches the party invitation. Custom wraps use specialty ribbon, tulle, mesh, toppers and hand-built details, and take real time, so they cost more than a Classic wrap.</p></div>
+    <table class="sizes reveal">
+      <thead><tr><th>Size</th><th>What you get</th><th>Starting at</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Small</strong></td><td>Themed paper and ribbon, a statement bow or topper, tag</td><td>from $15</td></tr>
+        <tr><td><strong>Medium</strong></td><td>Themed build with layered ribbon, tulle or mesh, embellishments</td><td>from $22</td></tr>
+        <tr><td><strong>Large</strong></td><td>Full custom build, stacked or shaped, hand-made details</td><td>from $32</td></tr>
+        <tr><td><strong>Oversized / one-of-a-kind</strong></td><td>Shirt-and-tie wraps, character builds, anything you can dream up</td><td>quoted</td></tr>
+      </tbody>
+    </table>
+    <p class="fineprint">Send a photo of the gift and tell us the theme. Custom quotes are returned within one business day.</p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Discounts</span><h2>Three easy ways to save</h2><p>Taken off the group price on any Classic order.</p></div>
+    <table class="sizes reveal">
+      <tbody>
+        <tr><td><strong>Just wrapping, no bows</strong></td><td>Paper and a tag only, no ribbon or bow</td><td>$15 off</td></tr>
+        <tr><td><strong>Everything boxed and ready to wrap</strong></td><td>Gifts arrive already in boxes, so wrapping starts right away</td><td>$10 off</td></tr>
+        <tr><td><strong>Recycled box discount</strong></td><td>Save and reuse gift boxes from last year</td><td>$10 off</td></tr>
+      </tbody>
+    </table>
+    <p class="fineprint">Bringing your own paper and ribbon? Mention it when you book and we will price it in.</p>
   </div>
 </section>
 
@@ -570,9 +603,9 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
     <table class="sizes reveal">
       <thead><tr><th>Order size</th><th>Included</th><th>Starting rate</th></tr></thead>
       <tbody>
-        <tr><td><strong>25 – 99 gifts</strong><small>Starter</small></td><td>One wrap style, printed tags, free local pickup &amp; delivery</td><td>$9 / gift</td></tr>
+        <tr><td><strong>25 – 99 gifts</strong><small>Starter</small></td><td>One wrap style, printed tags, pickup &amp; delivery from $50</td><td>$9 / gift</td></tr>
         <tr><td><strong>100 – 249 gifts</strong><small>Team</small></td><td>Two wrap styles, custom logo tags, brand-color ribbon, venue delivery</td><td>$8 / gift</td></tr>
-        <tr><td><strong>250+ gifts</strong><small>Enterprise</small></td><td>Dedicated timeline, multi-site delivery, optional on-site Wrap Bar, Net-30 available</td><td>Custom</td></tr>
+        <tr><td><strong>250+ gifts</strong><small>Enterprise</small></td><td>Dedicated timeline, multi-site delivery, invoicing for business accounts</td><td>Custom</td></tr>
       </tbody>
     </table>
     <p style="margin-top:16px"><a class="btn btn-secondary" href="corporate-gift-wrapping.html">Corporate package details →</a></p>
@@ -586,13 +619,14 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
       <tbody>
         <tr><td><strong>Handwritten note card</strong></td><td>Your message, our handwriting, tucked under the ribbon</td><td>$2 / gift</td></tr>
         <tr><td><strong>Custom logo gift tags</strong></td><td>Heavy card stock printed with your logo and message</td><td>$1.50 / gift</td></tr>
-        <tr><td><strong>Luxe upgrade</strong></td><td>Double-satin or velvet ribbon, embellishments, specialty paper</td><td>+$4 / gift</td></tr>
+        <tr><td><strong>Premium ribbon &amp; embellishments</strong></td><td>Satin or velvet ribbon, tulle, a topper or ornament added to a Classic wrap</td><td>+$4 / gift</td></tr>
         <tr><td><strong>Rush (under 72 hours)</strong></td><td>Subject to availability, especially in December</td><td>+25%</td></tr>
-        <tr><td><strong>Pickup &amp; delivery</strong></td><td>Free within 15 miles of Sweetwater on orders of 10+ gifts. Knoxville, Maryville, Cleveland and Chattanooga quoted by trip.</td><td>from $25 / trip</td></tr>
-        <tr><td><strong>On-site Wrap Bar</strong></td><td>Styled wrapping station at your party or event, three hours, supplies included</td><td>from $350</td></tr>
+        <tr><td><strong>Gift card wrap</strong></td><td>A gift card dressed up in a small box with ribbon and a tag</td><td>$5 each</td></tr>
+        <tr><td><strong>Oversized / odd shape</strong></td><td>Baskets, bikes, guitars, plush animals, anything without flat sides</td><td>from $15 each</td></tr>
+        <tr><td><strong>Pickup &amp; delivery</strong></td><td>Round trip beyond 5 miles of Sweetwater. Knoxville, Maryville, Cleveland and Chattanooga quoted by distance.</td><td>from $50</td></tr>
       </tbody>
     </table>
-    <p class="fineprint">A 50% deposit reserves your date; the balance is due at delivery. Corporate accounts may be invoiced. Prices effective for the 2026 season and subject to change.</p>
+    <p class="fineprint">A 50% deposit reserves your date; the balance is due at delivery. Cash, Venmo or personal check. Business accounts may be invoiced. Prices effective for the 2026 season and subject to change.</p>
   </div>
 </section>
 
@@ -606,15 +640,15 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
 {cta_band("Need an exact figure?", "Send a count and a few photographs and we will price the order precisely, within one business day.")}
 '''
 pricing_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"ItemList","name":"Gift wrapping packages","itemListElement":[
-{{"@type":"Offer","position":1,"name":"Stocking Saver — 10 gifts","price":"79","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
-{{"@type":"Offer","position":2,"name":"Holiday Hero — 25 gifts","price":"189","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
-{{"@type":"Offer","position":3,"name":"Whole Tree — 50 gifts","price":"349","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
+{{"@type":"Offer","position":1,"name":"Small group — 1 to 10 gifts","price":"60","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
+{{"@type":"Offer","position":2,"name":"Medium group — 11 to 25 gifts","price":"80","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
+{{"@type":"Offer","position":3,"name":"Large group — 26 to 50 gifts","price":"100","priceCurrency":"USD","url":"{SITE}/pricing.html"}},
 {{"@type":"Offer","position":4,"name":"Corporate Starter — 25 to 99 gifts","price":"9","priceCurrency":"USD","url":"{SITE}/corporate-gift-wrapping.html"}},
 {{"@type":"Offer","position":5,"name":"Corporate Team — 100 to 249 gifts","price":"8","priceCurrency":"USD","url":"{SITE}/corporate-gift-wrapping.html"}}]}}</script>'''
 pages.append(dict(slug="pricing.html", crumb="Pricing",
-  title="Gift Wrapping Prices & Packages | From $6 per Gift | TN",
+  title="Gift Wrapping Prices & Packages | Groups from $60 | TN",
   og_title="Gift Wrapping Prices & Packages — All Wrapped Up",
-  desc="East Tennessee gift wrapping prices: from $6 per gift, holiday bundles from $79, corporate rates from $8 per gift. Paper, ribbon, bow and tag included. Instant estimate.",
+  desc="East Tennessee gift wrapping prices: Classic wrapping from $60 for up to 10 gifts with all materials included, custom themed wraps from $15 per gift, corporate rates from $8 per gift.",
   ld=pricing_ld, body=pricing_body))
 
 # HOLIDAY
@@ -629,7 +663,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
 </section>
 
 <section class="banner">
-  <img src="assets/photos/wide-holiday-display.webp" alt="A table full of coordinated holiday gifts in candy-stripe and chalkboard papers with tulle-wrapped towers" width="1800" height="771" loading="lazy">
+  <img src="assets/photos/wide-holiday-display.webp" alt="A table full of coordinated holiday gifts in candy-stripe and chalkboard papers with tulle-wrapped towers" width="1400" height="933" loading="lazy">
   <div class="wrap banner-text reveal"><span class="kicker">Recent holiday work</span><h2>A whole family's Christmas, wrapped and sorted</h2></div>
 </section>
 
@@ -642,7 +676,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
       <ul class="checklist">
         <li>Santa gifts wrapped in separate paper and kept apart from family gifts</li>
         <li>Gifts returned sorted by recipient, so stockings and tree are a five-minute job</li>
-        <li>Discreet pickup and delivery during school hours</li>
+        <li>Pickup and delivery scheduled around your week, evenings and weekends included</li>
         <li>Teacher, coach and neighbor gifts included in the same order</li>
         <li>Coordinated palette so the tree looks styled, not random</li>
       </ul>
@@ -650,38 +684,38 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
     <div class="reveal">
       <div class="stats">
         <div class="stat"><b>6+</b><span>hours the average family spends wrapping</span></div>
-        <div class="stat"><b>25</b><span>gifts in our most popular bundle</span></div>
-        <div class="stat"><b>$189</b><span>Holiday Hero package</span></div>
+        <div class="stat"><b>$80</b><span>for 11 to 25 gifts, materials included</span></div>
+        <div class="stat"><b>$0</b><span>to drop off in Sweetwater</span></div>
       </div>
-      <div class="callout"><span class="h">Ship directly to the studio</span><p>Have online orders delivered to the Sweetwater studio. We unbox, check each item against the packing slip, wrap and deliver the finished order. No boxes on the porch.</p></div>
+      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each item is unboxed, checked against the packing slip, wrapped and delivered finished. No boxes piling up on your porch.</p></div>
     </div>
   </div>
 </section>
 
 <section>
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Holiday packages</span><h2>Choose a bundle and consider it done</h2></div>
+    <div class="section-head reveal"><span class="kicker">Holiday pricing</span><h2>Pick your group size and consider it done</h2><p>Classic wrapping with paper, ribbon, bows and tags included. Themed and custom builds are quoted by the gift.</p></div>
     <div class="pricing">
-      <div class="plan reveal"><span class="name">Stocking Saver</span><h3>10 gifts</h3><p class="who">One person's list or the special few</p><div class="price">$79</div><p class="per">studio drop-off in Sweetwater</p><ul><li>One coordinated palette</li><li>Tags with names</li><li>3-day turnaround</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Holiday Hero</span><h3>25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$189</div><p class="per">free pickup &amp; delivery within 15 miles</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li><li>Priority December dates</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan reveal"><span class="name">Whole Tree</span><h3>50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$349</div><p class="per">free pickup &amp; delivery, Knoxville to Chattanooga</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li><li>First pick of dates</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
+      <div class="plan reveal"><span class="name">Small group</span><h3>1 – 10 gifts</h3><p class="who">One person's list or the special few</p><div class="price">$60</div><p class="per">all materials included</p><ul><li>One coordinated palette</li><li>Tags with names</li><li>Drop-off in Sweetwater</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book now</a></div>
+      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Medium group</span><h3>11 – 25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$80</div><p class="per">all materials included</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li><li>Priority December dates</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
+      <div class="plan reveal"><span class="name">Large group</span><h3>26 – 50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$100</div><p class="per">51+ gifts from $120</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li><li>First pick of dates</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
     </div>
-    <p class="fineprint">Bundles assume a typical mix of small and medium gifts with a few large. Oversized items quoted separately. <a href="pricing.html">Full price list →</a></p>
+    <p class="fineprint">Standard-size gifts. Oversized items add from $15 each. No bows, pre-boxed and recycled-box discounts apply. <a href="pricing.html">Full price list →</a></p>
   </div>
 </section>
 
 <section class="alt">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Holiday portfolio</span><h2>From the studio, December after December</h2></div>
+    <div class="section-head reveal"><span class="kicker">Holiday portfolio</span><h2>Real orders, December after December</h2></div>
     <div class="gallery">
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="900" height="900" loading="lazy"><figcaption>Gold mesh, red glitter</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-trees-burlap.webp" alt="Christmas tree paper with copper burlap ribbon and gold curls" width="900" height="900" loading="lazy"><figcaption>Burlap and copper curls</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-special-delivery.webp" alt="North Pole special delivery box with emerald satin bow" width="900" height="900" loading="lazy"><figcaption>North Pole special delivery</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-pompom-stack.webp" alt="Two stacked boxes in red Happy Holidays paper with a pom-pom garland" width="900" height="900" loading="lazy"><figcaption>Pom-pom garland stack</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-snowflake-cube.webp" alt="Oversized cube gift in purple snowflake paper with silver organza bow and snowflake" width="900" height="900" loading="lazy"><figcaption>Oversized, finished in silver</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-purple-joy.webp" alt="Purple snowflake gift with blue and silver ribbon, bluebird ornament and Joy tag" width="900" height="900" loading="lazy"><figcaption>Ornament and tag detail</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/sq-nutcracker.webp" alt="Nutcracker print paper with sage green glitter ribbon" width="900" height="900" loading="lazy"><figcaption>Nutcracker print</figcaption></figure>
-      <figure class="gift-tile reveal"><img src="assets/photos/land-colorful-trees.webp" alt="Two gifts in colorful bottle-brush tree paper with emerald satin bow" width="900" height="900" loading="lazy"><figcaption>Bright trees, emerald satin</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-christmas-gold.webp" alt="Christmas tree paper with gold mesh and red glitter bow" width="1200" height="1200" loading="lazy"><figcaption>Gold mesh, red glitter</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-christmas-gold-white.webp" alt="Christmas tree paper with gold mesh and white glitter poinsettias" width="1200" height="1200" loading="lazy"><figcaption>Gold mesh, white poinsettias</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-special-delivery.webp" alt="North Pole special delivery box with emerald satin bow" width="1200" height="1200" loading="lazy"><figcaption>North Pole special delivery</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-pompom-stack.webp" alt="Two stacked boxes in red Happy Holidays paper with a pom-pom garland" width="1200" height="1200" loading="lazy"><figcaption>Pom-pom garland stack</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-snowflake-cube.webp" alt="Oversized cube gift in purple snowflake paper with silver organza bow and snowflake" width="1200" height="1200" loading="lazy"><figcaption>Oversized, finished in silver</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-snowflake-just-for-you.webp" alt="Purple snowflake gift with a silver organza bow and Just For You tag" width="1200" height="1200" loading="lazy"><figcaption>Organza bow and tag</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-nutcracker.webp" alt="Nutcracker print paper with sage green glitter ribbon" width="1200" height="1200" loading="lazy"><figcaption>Nutcracker print</figcaption></figure>
+      <figure class="gift-tile reveal"><img src="assets/photos/sq-plaid-green-bow.webp" alt="Green and navy plaid paper with emerald ribbon and a curling-ribbon burst" width="1200" height="1200" loading="lazy"><figcaption>Plaid, emerald ribbon</figcaption></figure>
     </div>
   </div>
 </section>
@@ -703,39 +737,39 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
 pages.append(dict(slug="holiday-gift-wrapping.html", crumb="Holiday gift wrapping",
   title="Christmas Gift Wrapping Service | Sweetwater, Knoxville & Chattanooga",
   og_title="Christmas & Holiday Gift Wrapping Service — East Tennessee",
-  desc="Holiday gift wrapping for busy families in Sweetwater, Knoxville and Chattanooga, TN. Christmas bundles from $79, Santa paper kept separate, pickup and delivery. Book early.",
+  desc="Holiday gift wrapping for busy families in Sweetwater, Knoxville and Chattanooga, TN. From $60 for up to 10 gifts, materials included, Santa paper kept separate, pickup and delivery. Book early.",
   body=holiday_body))
 
 # ABOUT
 about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the bows",
-  f"{BIZ} is an owner-operated gift wrapping studio in {CITY}, Tennessee, built on a genuine love of crisp corners and a well-tied bow.", "About the studio") + f'''
+  f"{BIZ} is a one-woman gift wrapping service run from {OWNER.split()[0]}'s home in {CITY}, Tennessee, built on a love of themed, memorable gifts and a well-tied bow.", "About Amiebeth") + f'''
 <section>
   <div class="wrap two-col">
     <div class="prose reveal">
-      <h2 style="margin-top:0">A little about the studio</h2>
+      <h2 style="margin-top:0">A little about me</h2>
       <p>I'm {OWNER}. {BIZ} began because every December I was the person friends and family handed their gifts to. Somewhere between wrapping for the whole street and the first office that asked me to finish their client gifts, it became a business.</p>
-      <p>I work from a dedicated studio in {CITY}, on I-75 between Knoxville and Chattanooga, which means I can collect from a Knoxville office in the morning and deliver to a Chattanooga venue the same week. Every gift is wrapped by hand, by me, with paper and ribbon chosen because they hold a crease and tie a proper bow.</p>
+      <p>I work from my home in {CITY}, on I-75 between Knoxville and Chattanooga, which means I can collect from a Knoxville office in the morning and deliver to a Chattanooga venue the same week. Every gift is wrapped by hand, by me. What I love most is a theme: a shirt and tie for Dad, a jungle nursery for a baby shower, a whole Christmas in one family's colors. Classic paper-and-ribbon wraps are always on the menu too.</p>
       <h3>What I care about</h3>
       <ul>
         <li><strong>The details.</strong> Hidden tape, aligned patterns, bows that stay full through the car ride.</li>
         <li><strong>Your colors, not mine.</strong> Corporate orders match your brand. Family orders match your tree.</li>
         <li><strong>Being easy to work with.</strong> Prompt replies, clear pricing and delivery when promised.</li>
       </ul>
-      <div class="callout"><span class="h">The signature ribbon</span><p>The pink polka-dot ribbon from the business card is tied on the first gift of every order. Consider it a signature.</p></div>
+      <div class="callout"><span class="h">Two ways to wrap</span><p><strong>Classic</strong> is paper, ribbon, a bow and a tag, in whatever colors or theme you like. <strong>Signature custom</strong> is the fun stuff: themed builds, specialty ribbon, tulle and mesh, toppers and hand-built details. Custom costs more because the materials and the time are more, and it is quoted gift by gift.</p></div>
     </div>
     <div class="reveal">
-      <figure class="photo-card reveal"><img src="assets/photos/about-hannah.webp" alt="Buffalo check gift with black yarn, burlap ribbon and a Scrabble-tile name tag reading Hannah" width="960" height="1200" loading="lazy"><figcaption>Details like a Scrabble-tile name tag are what people remember.</figcaption></figure>
+      <figure class="photo-card reveal"><img src="assets/photos/about-hannah.webp" alt="Buffalo check gift with black yarn, burlap ribbon and a Scrabble-tile name tag reading Hannah" width="1200" height="1500" loading="lazy"><figcaption>Details like a Scrabble-tile name tag are what people remember.</figcaption></figure>
     </div>
   </div>
 </section>
 
 <section class="alt" id="service-area">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Service area</span><h2>Sweetwater home base, Knoxville to Chattanooga by appointment</h2><p>Studio drop-off in {CITY} is always free. Pickup and delivery is free within 15 miles on orders of 10 or more gifts, and quoted by trip for the wider corridor.</p></div>
+    <div class="section-head reveal"><span class="kicker">Service area</span><h2>Sweetwater home base, Knoxville to Chattanooga by appointment</h2><p>Drop-off in {CITY} is always free. Pickup and delivery is from $50 round trip beyond 5 miles of {CITY}, and quoted by distance for the wider corridor.</p></div>
     <div class="grid grid-3">
       <div class="card reveal"><div class="icon">{ICONS['pin']}</div><h3>Home base</h3><p>Sweetwater, Madisonville, Athens, Loudon, Niota, Philadelphia, Vonore, Tellico Village and Lenoir City.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>North to Knoxville</h3><p>Maryville, Alcoa, Farragut, Oak Ridge, West Knoxville and downtown Knoxville. Pickup and delivery from $25 per trip.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>South to Chattanooga</h3><p>Cleveland, Ooltewah, Hixson, East Ridge and downtown Chattanooga. Pickup and delivery from $25 per trip.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>North to Knoxville</h3><p>Maryville, Alcoa, Farragut, Oak Ridge, West Knoxville and downtown Knoxville. Pickup and delivery quoted by distance, from $50 round trip.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>South to Chattanooga</h3><p>Cleveland, Ooltewah, Hixson, East Ridge and downtown Chattanooga. Pickup and delivery quoted by distance, from $50 round trip.</p></div>
     </div>
     <p class="fineprint" style="text-align:center">Outside these areas? Please ask. Larger corporate orders often justify the distance.</p>
   </div>
@@ -746,7 +780,7 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
     <div class="section-head reveal"><span class="kicker">Good to know</span><h2>How I work</h2></div>
     <div class="benefit-list">
       <div class="benefit reveal"><div class="n">{ICONS['calendar']}</div><div><h3>By appointment</h3><p>Drop-offs and pickups are scheduled so every order receives full attention. Call or text to arrange a time.</p></div></div>
-      <div class="benefit reveal"><div class="n">{ICONS['shield']}</div><div><h3>Your gifts are safe</h3><p>Gifts are logged at intake, stored in a secured studio and returned against a checklist.</p></div></div>
+      <div class="benefit reveal"><div class="n">{ICONS['shield']}</div><div><h3>Your gifts are safe</h3><p>Gifts are logged at intake, stored safely and returned against a checklist.</p></div></div>
       <div class="benefit reveal"><div class="n">{ICONS['eye']}</div><div><h3>Photo approvals</h3><p>Corporate orders receive a photographed sample before the batch is wrapped. Families may request one as well.</p></div></div>
       <div class="benefit reveal"><div class="n">{ICONS['heart']}</div><div><h3>Local and personal</h3><p>You work with the owner from the first message to the final delivery.</p></div></div>
     </div>
@@ -758,24 +792,25 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
 about_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"{OWNER}","jobTitle":"Owner & gift wrapper","worksFor":{{"@id":"{SITE}/#business"}},"email":"{EMAIL}","telephone":"{PHONE_TEL}","address":{{"@type":"PostalAddress","addressLocality":"{CITY}","addressRegion":"{REGION}","addressCountry":"US"}}}}</script>'''
 pages.append(dict(slug="about.html", crumb="About",
   title=f"About {OWNER} | {BIZ}, Sweetwater TN",
-  og_title=f"About {BIZ} — Home-Based Gift Wrapping Studio in Sweetwater, TN",
-  desc=f"Meet {OWNER}, owner of {BIZ}, a home-based gift wrapping studio in Sweetwater, Tennessee serving Knoxville to Chattanooga with pickup and delivery.",
+  og_title=f"About {BIZ} — Home-Based Gift Wrapping in Sweetwater, TN",
+  desc=f"Meet {OWNER}, owner of {BIZ}, a home-based gift wrapping service in Sweetwater, Tennessee serving Knoxville to Chattanooga with pickup and delivery.",
   ld=about_ld, body=about_body))
 
 # FAQ
 faqs = [
- ("How much does professional gift wrapping cost?", "Gifts start at $6 for small items, $10 for medium and $16 for large, with oversized items quoted from $25. Every price includes premium paper, coordinating ribbon, a hand-tied bow and a gift tag. Family bundles start at $79 for 10 gifts and corporate volume pricing starts at $8 per gift for 100 or more."),
- ("Do you offer pickup and delivery?", "Yes. Pickup and delivery is free within 15 miles of Sweetwater on orders of 10 or more gifts. Trips to Knoxville, Maryville, Cleveland and Chattanooga are quoted per trip, typically from $25, and are included in the larger corporate and family packages."),
+ ("How much does professional gift wrapping cost?", "Classic wrapping is priced by the group with all materials included: $60 for 1 to 10 gifts, $80 for 11 to 25, $100 for 26 to 50 and from $120 for 51 or more. Oversized items add from $15 each and gift cards can be boxed and ribboned for $5. Signature custom wraps, the themed and hand-built ones, start around $15 per gift and are quoted individually because the materials and time are more. Corporate volume pricing starts at $8 per gift for 100 or more."),
+ ("Do you offer pickup and delivery?", "Yes. Drop-off in Sweetwater is free. Pickup and delivery beyond 5 miles is $50 round trip, and Knoxville, Maryville, Cleveland and Chattanooga are quoted by distance."),
  ("How far in advance should I book holiday wrapping?", "For Christmas, book by early November for corporate orders and by the first week of December for family bundles. Dates are reserved in order of deposit and December fills quickly. Rush orders under 72 hours may be available for a 25% surcharge."),
  ("Can you match my company's brand colors?", "Absolutely. Send your logo and brand colors and we'll source ribbon to match and print custom logo gift tags. Corporate orders receive a photo mock-up for approval before the batch is wrapped."),
- ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped to the Sweetwater studio. We'll unbox, check the packing slip against your list, wrap and deliver the finished gifts. Ask for the shipping address when you book."),
- ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. They're priced as oversized items from $25. Send a photo for an exact quote."),
- ("Can I supply my own wrapping paper and ribbon?", "Yes. Bring your own materials and we'll wrap with them for $2 off the per-gift price. We'll let you know if there's not enough to finish the order."),
+ ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each item is unboxed, checked against your list, wrapped and delivered finished. Ask for the shipping address when you book."),
+ ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. They add from $15 each to the group price. Send a photo for an exact quote."),
+ ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and reusing last year's gift boxes is another $10 off."),
  ("How do you keep Santa gifts separate?", "Tell us which gifts are from Santa and we'll wrap them in a distinct paper, tag them separately and return them in their own labeled bag so nothing gets mixed up on Christmas Eve."),
- ("Do you wrap on site at events?", "Yes. Our on-site Wrap Bar brings a styled wrapping station to your holiday party, open house or corporate event. Guests bring gifts and we wrap while they mingle. From $350 for three hours, supplies included."),
- ("What payment methods do you accept?", "Cash, check, Venmo, Zelle and major cards. A 50% deposit reserves your date and the balance is due at delivery. Established corporate accounts can be invoiced with Net-30 terms."),
- ("Where are you located?", f"{BIZ} is a home-based studio in {CITY}, Tennessee, right off I-75 between Knoxville and Chattanooga. Drop-offs are by appointment. Call or text {PHONE} to schedule."),
- ("Are my gifts safe with you?", "Every gift is logged at intake with a description, stored in a locked studio and returned with a checklist. Corporate orders can be labeled by recipient or department for easy distribution."),
+ ("Can you wrap the gifts for an office party or white elephant?", "Yes, and it is one of our favorite jobs. Send every gift, in a bag with a note of who it is from if you like, and it all comes back wrapped so the surprise is real for everyone, including whoever organized it. We can wrap in one coordinated style or make every gift look different."),
+ ("Do you wrap gift cards?", "Yes. A gift card in a plain envelope is easy to overlook. We dress it up in a small box with ribbon and a tag for $5, or build it into a themed wrap that hints at where the card is from."),
+ ("What payment methods do you accept?", "Cash, Venmo and personal check. A 50% deposit reserves your date and the balance is due at delivery. Business accounts can be invoiced."),
+ ("Where are you located?", f"{BIZ} is home-based in {CITY}, Tennessee, right off I-75 between Knoxville and Chattanooga. Drop-offs are by appointment. Call or text {PHONE} to schedule."),
+ ("Are my gifts safe with you?", "Every gift is logged at intake with a description, stored safely and returned with a checklist. Corporate orders can be labeled by recipient or department for easy distribution."),
 ]
 faq_html = "".join(f'<details class="reveal"><summary>{esc(q)}</summary><div class="a"><p>{esc(a)}</p></div></details>' for q, a in faqs)
 import json as _j
@@ -816,7 +851,7 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
         <div class="field"><label for="c-date">Need them by</label><input id="c-date" type="date" name="needed_by"></div>
         <div class="field"><label for="c-city">Your city</label><input id="c-city" name="city" placeholder="Sweetwater, Knoxville, Chattanooga…" autocomplete="address-level2"></div>
       </div>
-      <div class="field"><label for="c-pickup">Pickup &amp; delivery?</label><select id="c-pickup" name="pickup"><option>I'll drop off at the studio in Sweetwater</option><option>Please pick up and deliver</option><option>Ship gifts directly to you</option><option>Not sure yet</option></select></div>
+      <div class="field"><label for="c-pickup">Pickup &amp; delivery?</label><select id="c-pickup" name="pickup"><option>I'll drop off in Sweetwater</option><option>Please pick up and deliver</option><option>Ship gifts directly to you</option><option>Not sure yet</option></select></div>
       <div class="field"><label for="c-msg">Tell us about the gifts</label><textarea id="c-msg" name="message" rows="5" placeholder="Sizes, colors you love, brand colors, anything oversized, event details…"></textarea></div>
       <button class="btn btn-primary btn-lg btn-block" type="submit">Send my quote request</button>
       <p class="form-note">Or <a href="#" data-mailto>open this request in your email app</a>. Your information is never shared.</p>
@@ -826,10 +861,10 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
       <ul class="info-list">
         <li>{ICONS['phone']}<span>Call or text<br><a href="tel:{PHONE_TEL}">{PHONE}</a></span></li>
         <li>{ICONS['mail']}<span>Email<br><a href="mailto:{EMAIL}">{EMAIL}</a></span></li>
-        <li>{ICONS['pin']}<span>Studio<br><strong>{CITY}, Tennessee {ZIP}</strong><br>Drop-off by appointment. Address shared when you book.</span></li>
+        <li>{ICONS['pin']}<span>Based in<br><strong>{CITY}, Tennessee {ZIP}</strong><br>Home-based. Drop-off by appointment; address shared when you book.</span></li>
         <li>{ICONS['truck']}<span>Pickup &amp; delivery<br>Knoxville · Maryville · Athens · Cleveland · Chattanooga</span></li>
       </ul>
-      <div class="hours"><b>Hours</b>Monday – Saturday, 9am – 6pm<br>Extended hours in November and December</div>
+      <div class="hours"><b>Appointments</b>By appointment, evenings and weekends included. Text to find a time.</div>
       <div class="hours"><b>Response time</b>Quotes within one business day. Texts usually faster.</div>
     </aside>
   </div>

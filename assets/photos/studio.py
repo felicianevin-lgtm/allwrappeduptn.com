@@ -1,53 +1,83 @@
-"""Studio v2: cut-out + relight + directional shadows on a lit backdrop."""
+"""Studio v3 - clean seamless-studio product shots from phone photos.
+Cutout: BiRefNet (rembg). Straighten top-down shots. Warm-white seamless backdrop,
+soft shadow built from the subject's own silhouette, mild colour grade. No horizon line."""
+import stub, sys, pathlib
 from rembg import remove, new_session
 from PIL import Image, ImageOps, ImageFilter, ImageChops, ImageDraw
-import numpy as np, pathlib, sys, time
-U = pathlib.Path('/root/.claude/uploads/e47ac2d3-6f0e-5f1a-8d8f-dfa7b433f156')
-OUT = pathlib.Path('assets/photos'); OUT.mkdir(exist_ok=True)
-CUT = pathlib.Path('/tmp/claude-0/cutouts'); CUT.mkdir(exist_ok=True, parents=True)
-sess = new_session("isnet-general-use"); sess_u2 = new_session("u2net")
-U2NET = {"3f236cb7", "a082a12c", "2ff12bbc", "726a9940"}
-SQ = (900, 900); HERO = (1200, 1500); LAND = (1400, 933)
+import numpy as np
+
+U = pathlib.Path(r'G:/My Drive/All Wrapped Up/Originals')  # phone originals, filed in Drive
+OUT = pathlib.Path('out'); OUT.mkdir(exist_ok=True)
+CUT = pathlib.Path('cut'); CUT.mkdir(exist_ok=True)
+SQ, HERO, LAND = (1200, 1200), (1200, 1500), (1400, 933)
+# name: (uid, canvas, kind)  kind: 'flat' = top-down flat-lay (straighten), 'stand' = upright/angled
 SPECS = {
- 'hero-navy-chiffon':   ('182b1b47', HERO, True,  None),
- 'about-hannah':        ('3f236cb7', HERO, True,  None),
- 'sq-rainbow-box':      ('cce4d41b', SQ, False, None),
- 'sq-hannah-check':     ('3f236cb7', SQ, True,  None),
- 'sq-christmas-gold':   ('2ff12bbc', SQ, True,  None),
- 'sq-western-rose':     ('f953b99b', SQ, True,  None),
- 'sq-flamingo':         ('3945b91d', SQ, False, None),
- 'sq-dad-shirt':        ('4dc32eeb', SQ, False, None),
- 'sq-purple-organza':   ('161109a9', SQ, False, None),
- 'sq-vols':             ('39539df9', SQ, False, None),
- 'sq-nutcracker':       ('34ebf013', SQ, True,  None),
- 'sq-bee-stack':        ('50c52199', SQ, False, None),
- 'sq-trees-burlap':     ('caf7879e', SQ, False, None),
- 'sq-paisley':          ('3e9d56c3', SQ, True,  None),
- 'corp-purple-set':     ('3e409de2', LAND, False, None),
- 'sq-special-delivery': ('c3f0febb', SQ, True,  None),
- 'sq-pompom-stack':     ('8b7f17b9', SQ, False, None),
- 'sq-snowflake-cube':   ('8727f463', SQ, False, None),
- 'sq-purple-joy':       ('726a9940', SQ, False, None),
- 'land-colorful-trees': ('750f1b45', LAND, False, None),
- 'sq-wedding-navy':     ('182b1b47', SQ, True,  (0, .6)),
- 'sq-bridal-dots':      ('a082a12c', SQ, True,  None),
- 'sq-baby-shower':      ('d59d1308', SQ, False, None),
- 'sq-camo-birthday':    ('efd1c6e1', SQ, False, None),
+ 'sq-llama-red-bow':          ('d804471c', SQ, 'flat'),
+ 'sq-birthday-black-white':   ('b453506e', SQ, 'flat', None, 'manual'),
+ 'sq-paisley':                ('a964ecf8', SQ, 'flat'),
+ 'land-camo-long':            ('dd10065f', LAND, 'stand', (0.02, 0.22, 0.99, 0.63)),
+ 'sq-camo-stack':             ('43ceaa6c', SQ, 'stand'),
+ 'sq-camo-birthday':          ('8fa4b488', SQ, 'stand'),
+ 'sq-flamingo':               ('c57b976a', SQ, 'stand'),
+ 'sq-hannah-check':           ('58dccf1a', SQ, 'flat', None, 'manual'),
+ 'about-hannah':              ('58dccf1a', HERO, 'flat', None, 'manual'),
+ 'hero-navy-chiffon':         ('1ca01fda', HERO, 'flat'),
+ 'sq-wedding-navy':           ('1ca01fda', SQ, 'flat'),
+ 'sq-plaid-green-bow':        ('69afd6a2', SQ, 'flat'),
+ 'sq-plaid-green-box':        ('878b2bd1', SQ, 'stand'),
+ 'sq-western-rose':           ('87fe1e52', SQ, 'flat'),
+ 'sq-camo-twine':             ('c0302a5a', SQ, 'flat'),
+ 'sq-christmas-gold-white':   ('f4c1d983', SQ, 'flat'),
+ 'sq-christmas-gold':         ('07cb3e95', SQ, 'flat'),
+ 'sq-vols':                   ('37879ab5', SQ, 'stand', (0.0, 0.05, 1.0, 0.98), 'isnet-general-use'),
+ 'sq-rainbow-dots':           ('7ca08313', SQ, 'flat'),
+ 'sq-rainbow-box':            ('c48b8f87', SQ, 'stand'),
+ 'sq-bee-bow':                ('f56cca68', SQ, 'flat'),
+ 'sq-bee-box':                ('da1763cf', SQ, 'stand'),
+ 'wide-holiday-display':      ('92c02b8d', LAND, 'stand'),
+ 'land-christmas-kraft':      ('970a07e7', LAND, 'stand', (0.0, 0.0, 0.89, 1.0)),
+ 'land-candy-cane-display':   ('a542f86b', LAND, 'stand'),
+ 'sq-pompom-stack':           ('3e538245', SQ, 'stand'),
+ 'sq-snowflake-bow':          ('4a690134', SQ, 'stand'),
+ 'sq-snowflake-just-for-you': ('05e247a1', SQ, 'stand'),
+ 'sq-snowflake-cube':         ('9de4b6e4', SQ, 'stand'),
+ 'land-christmas-stack':      ('f2f3b58f', LAND, 'stand'),
+ 'sq-special-delivery':       ('79d25bb7', SQ, 'stand'),
+ 'sq-nutcracker':             ('fab08a38', SQ, 'stand'),
+ 'land-colorful-trees':       ('9bceeace', LAND, 'stand'),
+ 'sq-dad-shirt':              ('5b6286ca', SQ, 'stand'),
+ 'sq-baby-shower':            ('95116a58', SQ, 'stand'),
 }
 ONLY = sys.argv[1:]
+_sess = None
+def sess():
+    global _sess
+    if _sess is None: _sess = new_session('birefnet-general')
+    return _sess
+
 def find(uid): return next(U.glob(uid + '*'))
 
-def cutout(uid):
-    f = CUT / (uid + '.png')
+_sessions = {}
+def sess_for(model):
+    if model not in _sessions: _sessions[model] = new_session(model)
+    return _sessions[model]
+
+def cutout(uid, crop=None, model='birefnet-general'):
+    tag = uid + ('' if crop is None else '_c' + '-'.join(f'{v:.2f}' for v in crop)) + ('' if model == 'birefnet-general' else '_' + model)
+    f = CUT / (tag + '.png')
     if f.exists(): return Image.open(f).convert('RGBA')
-    im = ImageOps.exif_transpose(Image.open(find(uid))).convert('RGB'); im.thumbnail((1600, 1600), Image.LANCZOS)
-    out = remove(im, session=sess_u2) if uid in U2NET else remove(im, session=sess, alpha_matting=True,
-          alpha_matting_foreground_threshold=240, alpha_matting_background_threshold=10, alpha_matting_erode_size=6)
+    im = ImageOps.exif_transpose(Image.open(find(uid))).convert('RGB')
+    if crop:
+        l, t, r, b = crop; W, H = im.size
+        im = im.crop((int(l*W), int(t*H), int(r*W), int(b*H)))
+    im.thumbnail((2000, 2000), Image.LANCZOS)
+    out = remove(im, session=sess_for(model))
     out.save(f); return out
 
 def best_angle(alpha):
-    a = alpha.copy(); a.thumbnail((320, 320)); best = (0, 1e18)
-    for i in range(-40, 41):
+    """rotation (deg) that minimises the bounding box of the silhouette - squares a top-down box to the frame"""
+    a = alpha.copy(); a.thumbnail((400, 400)); best = (0, 1e18)
+    for i in range(-180, 181):
         ang = i*0.25; r = a.rotate(ang, expand=True, resample=Image.BILINEAR)
         bb = r.point(lambda v: 255 if v > 128 else 0).getbbox()
         if bb:
@@ -55,111 +85,124 @@ def best_angle(alpha):
             if area < best[1]: best = (ang, area)
     return best[0]
 
-# ---------- edge & colour work (numpy) ----------
-def clean_edges(rgba):
-    """Erode alpha 1px, feather, and pull edge colours from the interior to kill halos."""
-    a = rgba.split()[3].filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
-    arr = np.asarray(rgba).astype(np.float32); al = np.asarray(a).astype(np.float32)/255.0
-    rgb = arr[..., :3]
-    # interior colour spread: premultiplied blur / blurred alpha
-    pre = Image.fromarray((rgb*al[..., None]).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3))
-    ab = Image.fromarray((al*255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(3))
+def square_up(rgba):
+    """Perspective-correct a top-down shot so the box is a true rectangle.
+    Finds the box body (mask opened to drop ribbon/mesh), fits a quadrilateral,
+    and warps the whole cutout with that homography. Falls back to rotation."""
+    import cv2
+    a = np.asarray(rgba.split()[3]); m = (a > 128).astype(np.uint8)*255
+    k = max(9, int(min(rgba.size)*0.05)) | 1
+    ker = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+    body = cv2.morphologyEx(m, cv2.MORPH_OPEN, ker)
+    cnts, _ = cv2.findContours(body, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if not cnts: return rgba, 'none'
+    c = max(cnts, key=cv2.contourArea)
+    if cv2.contourArea(c) < 0.15*m.size: return rgba, 'small'
+    hull = cv2.convexHull(c); peri = cv2.arcLength(hull, True)
+    quad = None
+    for eps in (0.02, 0.03, 0.045, 0.06):
+        ap = cv2.approxPolyDP(hull, eps*peri, True)
+        if len(ap) == 4: quad = ap.reshape(4, 2).astype(np.float32); break
+    if quad is None:
+        quad = cv2.boxPoints(cv2.minAreaRect(c)).astype(np.float32)
+    # order tl, tr, br, bl
+    s = quad.sum(1); d = np.diff(quad, axis=1).ravel()
+    tl, br = quad[np.argmin(s)], quad[np.argmax(s)]; tr, bl = quad[np.argmin(d)], quad[np.argmax(d)]
+    src = np.array([tl, tr, br, bl], np.float32)
+    w = (np.linalg.norm(tr-tl) + np.linalg.norm(br-bl))/2; h = (np.linalg.norm(bl-tl) + np.linalg.norm(br-tr))/2
+    if w < 50 or h < 50: return rgba, 'degenerate'
+    dst = np.array([[0, 0], [w, 0], [w, h], [0, h]], np.float32)
+    Hm = cv2.getPerspectiveTransform(src, dst)
+    # keep everything (bows past the box edge): transform image corners, shift into view
+    W0, H0 = rgba.size
+    corners = np.array([[[0, 0]], [[W0, 0]], [[W0, H0]], [[0, H0]]], np.float32)
+    tc = cv2.perspectiveTransform(corners, Hm).reshape(4, 2)
+    minx, miny = np.floor(tc.min(0)); maxx, maxy = np.ceil(tc.max(0))
+    T = np.array([[1, 0, -minx], [0, 1, -miny], [0, 0, 1]], np.float32)
+    Hm = T @ Hm
+    outw, outh = int(maxx-minx), int(maxy-miny)
+    if outw*outh > 40_000_000 or outw < 100: return rgba, 'blowup'
+    arr = np.asarray(rgba)
+    warped = cv2.warpPerspective(arr, Hm, (outw, outh), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+    return Image.fromarray(warped, 'RGBA'), f'quad w={w:.0f} h={h:.0f}'
+
+def defringe(rgba):
+    arr = np.asarray(rgba).astype(np.float32); rgb, al = arr[..., :3], arr[..., 3]/255.0
+    pre = Image.fromarray((rgb*al[..., None]).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.5))
+    ab = Image.fromarray((al*255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(2.5))
     pre = np.asarray(pre).astype(np.float32); ab = np.asarray(ab).astype(np.float32)/255.0
     fill = pre/np.maximum(ab[..., None], 1e-3)
-    w = np.clip((0.92 - al)/0.92, 0, 1)[..., None]      # blend toward interior colour near the edge
+    w = np.clip((0.85 - al)/0.85, 0, 1)[..., None]
     rgb = rgb*(1-w) + fill*w
-    out = np.dstack([np.clip(rgb, 0, 255), al*255]).astype(np.uint8)
-    return Image.fromarray(out, 'RGBA')
+    return Image.fromarray(np.dstack([np.clip(rgb, 0, 255), al*255]).astype(np.uint8), 'RGBA')
 
-def white_balance(rgb, al, strength=0.75):
-    m = al > 0.95
-    px = rgb[m]
-    if len(px) < 500: return rgb
-    lum = px.mean(1); top = px[lum >= np.percentile(lum, 97)]
-    ref = top.mean(0); gain = ref.mean()/np.maximum(ref, 1)
-    gain = 1 + (gain-1)*strength; gain = np.clip(gain, 0.88, 1.18)
-    return np.clip(rgb*gain, 0, 255)
-
-def tone(rgb, al):
-    m = al > 0.95; px = rgb[m]
-    lo, hi = np.percentile(px, 0.5), np.percentile(px, 99.6)
-    rgb = (rgb - lo)*(255/max(hi-lo, 1)); rgb = np.clip(rgb, 0, 255)
-    x = rgb/255.0
-    x = x + 0.06*np.sin(np.pi*x)*(1-x)           # lift shadows
-    x = np.clip(0.5 + (x-0.5)*1.08, 0, 1)         # gentle contrast
-    x = 0.5 + 0.5*np.tanh(2.2*(x-0.5))/np.tanh(1.1)  # soft S curve
-    # vibrance: boost low-saturation colours a little more than saturated ones
-    mx, mn = x.max(2, keepdims=True), x.min(2, keepdims=True); sat = mx-mn
-    mean = x.mean(2, keepdims=True); x = mean + (x-mean)*(1 + 0.12*(1-sat))
-    return np.clip(x, 0, 1)*255
-
-def key_light(rgb, al):
-    """Soft key from upper-left: brighter top-left, gently darker bottom-right, plus a rim of light along the top."""
-    h, w = al.shape; yy, xx = np.mgrid[0:h, 0:w]
-    g = 1.07 - 0.14*((xx/w)*0.45 + (yy/h)*0.55)
-    top = np.exp(-((yy/h)/0.12)**2)*0.05
-    return np.clip(rgb*(g+top)[..., None], 0, 255)
-
-def relight(rgba):
-    rgba = clean_edges(rgba)
+def grade(rgba):
+    rgba = defringe(rgba)
     arr = np.asarray(rgba).astype(np.float32); rgb, al = arr[..., :3], arr[..., 3]/255.0
-    rgb = white_balance(rgb, al); rgb = tone(rgb, al); rgb = key_light(rgb, al)
-    out = Image.fromarray(np.dstack([rgb, al*255]).astype(np.uint8), 'RGBA')
-    r = out.convert('RGB').filter(ImageFilter.UnsharpMask(radius=1.1, percent=48, threshold=2))
-    r = r.convert('RGBA'); r.putalpha(out.split()[3]); return r
+    m = al > 0.97; px = rgb[m]
+    if len(px) > 1000:
+        lum = px.mean(1); top = px[lum >= np.percentile(lum, 98)]
+        ref = top.mean(0); gain = ref.mean()/np.maximum(ref, 1); gain = 1 + (gain-1)*0.5
+        rgb = np.clip(rgb*np.clip(gain, 0.9, 1.12), 0, 255)
+        px = rgb[m]; lo, hi = np.percentile(px, 0.3), np.percentile(px, 99.7)
+        rgb = np.clip((rgb - lo)*(255/max(hi-lo, 1)), 0, 255)
+    x = rgb/255.0
+    x = x + 0.05*np.sin(np.pi*x)*(1-x)
+    x = 0.5 + 0.5*np.tanh(2.0*(x-0.5))/np.tanh(1.0)
+    mx, mn = x.max(2, keepdims=True), x.min(2, keepdims=True); sat = mx-mn
+    mean = x.mean(2, keepdims=True); x = mean + (x-mean)*(1 + 0.10*(1-sat))
+    out = Image.fromarray(np.dstack([np.clip(x, 0, 1)*255, al*255]).astype(np.uint8), 'RGBA')
+    r = out.convert('RGB').filter(ImageFilter.UnsharpMask(radius=1.2, percent=40, threshold=2)).convert('RGBA')
+    r.putalpha(out.split()[3]); return r
 
-# ---------- set ----------
 def backdrop(w, h):
-    base = np.zeros((h, w, 3), np.float32)
     yy, xx = np.mgrid[0:h, 0:w]; u, v = xx/w, yy/h
-    wall = np.array([251, 248, 244], np.float32); floor = np.array([238, 230, 222], np.float32)
-    hz = 0.64; t = np.clip((v-hz+0.06)/0.12, 0, 1)[..., None]
-    base = wall*(1-t) + floor*t
-    base *= (1 - 0.07*np.clip(v-hz, 0, 1)/(1-hz))[..., None]           # floor falls off toward bottom
-    spot = np.exp(-(((u-0.3)/0.75)**2 + ((v-0.25)/0.7)**2))             # key light pool upper-left
-    base *= (0.93 + 0.10*spot)[..., None]
-    vig = 1 - 0.06*np.clip(np.sqrt((u-0.5)**2 + (v-0.5)**2)-0.35, 0, 1)/0.35
-    base *= vig[..., None]
+    base = np.array([247, 244, 239], np.float32)[None, None, :] * np.ones((h, w, 1), np.float32)
+    light = np.exp(-(((u-0.5)/0.75)**2 + ((v-0.42)/0.75)**2))
+    base = base*(0.955 + 0.055*light)[..., None]
     return Image.fromarray(np.clip(base, 0, 255).astype(np.uint8))
 
-def shadows(W, H, a, x, y, sw):
-    """cast shadow (offset down-right with light from upper-left, blurred more with distance) + contact shadow."""
-    cast = Image.new('L', (W, H), 0)
-    # perspective squash: scale silhouette vertically to lie on the floor, skew right
-    sh = a.resize((a.width, max(1, int(a.height*0.26))), Image.BILINEAR)
-    sk = sh.transform((sh.width + int(sh.height*0.9), sh.height), Image.AFFINE, (1, -0.9, 0, 0, 1, 0), Image.BILINEAR)
-    cast.paste(sk, (x + int(sw*0.02), y + a.height - sh.height + int(sw*0.02)))
-    cast = cast.filter(ImageFilter.GaussianBlur(sw*0.05)).point(lambda v: int(v*0.22))
-    contact = Image.new('L', (W, H), 0)
-    ew, eh = int(sw*0.96), int(sw*0.10)
+def shadow_layer(W, H, a, x, y, sw, kind):
+    if kind == 'flat':
+        s = Image.new('L', (W, H), 0); s.paste(a, (x + int(sw*0.012), y + int(sw*0.02)))
+        s = s.filter(ImageFilter.GaussianBlur(sw*0.028)).point(lambda v: int(v*0.30))
+        t = Image.new('L', (W, H), 0); t.paste(a, (x + int(sw*0.004), y + int(sw*0.006)))
+        t = t.filter(ImageFilter.GaussianBlur(sw*0.008)).point(lambda v: int(v*0.22))
+        return ImageChops.lighter(s, t)
+    sh = a.resize((a.width, max(1, int(a.height*0.18))), Image.BILINEAR)
+    cast = Image.new('L', (W, H), 0); cast.paste(sh, (x, y + a.height - sh.height + int(sw*0.015)))
+    cast = cast.filter(ImageFilter.GaussianBlur(sw*0.035)).point(lambda v: int(v*0.30))
+    ew, eh = int(a.width*0.98), int(sw*0.06)
     ell = Image.new('L', (ew, eh), 0); ImageDraw.Draw(ell).ellipse((0, 0, ew-1, eh-1), fill=255)
-    contact.paste(ell, (x + (sw-ew)//2, y + a.height - eh//2 - int(sw*0.008)))
-    contact = contact.filter(ImageFilter.GaussianBlur(sw*0.018)).point(lambda v: int(v*0.55))
-    amb = Image.new('L', (W, H), 0); amb.paste(a, (x, y + int(sw*0.012)))
-    amb = amb.filter(ImageFilter.GaussianBlur(sw*0.02)).point(lambda v: int(v*0.18))
-    return ImageChops.lighter(ImageChops.lighter(cast, contact), amb)
+    con = Image.new('L', (W, H), 0); con.paste(ell, (x + (a.width-ew)//2, y + a.height - eh//2 - int(sw*0.004)))
+    con = con.filter(ImageFilter.GaussianBlur(sw*0.014)).point(lambda v: int(v*0.45))
+    return ImageChops.lighter(cast, con)
 
-def compose(name, uid, canvas, straighten, focus):
-    sub = cutout(uid)
-    if straighten:
-        ang = best_angle(sub.split()[3])
-        if 0 < abs(ang) <= 10: sub = sub.rotate(ang, expand=True, resample=Image.BICUBIC)
-    bb = sub.split()[3].point(lambda v: 255 if v > 40 else 0).getbbox(); sub = sub.crop(bb)
-    if focus: h = sub.height; sub = sub.crop((0, int(h*focus[0]), sub.width, int(h*focus[1])))
-    sub = relight(sub)
-    W, H = canvas; pad = 0.08
-    s = min(W*(1-2*pad)/sub.width, H*(1-2*pad)/sub.height)
-    sub = sub.resize((max(1, int(sub.width*s)), max(1, int(sub.height*s))), Image.LANCZOS)
+def compose(name, uid, canvas, kind, crop=None, model='birefnet-general'):
+    sub = cutout(uid, crop, model)
+    if kind == 'flat':
+        sub, how = square_up(sub)
+        if not how.startswith('quad'):
+            ang = best_angle(sub.split()[3]); ang = ((ang + 45) % 90) - 45
+            if abs(ang) > 0.3: sub = sub.rotate(ang, expand=True, resample=Image.BICUBIC)
+        print('  square_up:', how, flush=True)
+    bb = sub.split()[3].point(lambda v: 255 if v > 24 else 0).getbbox(); sub = sub.crop(bb)
+    sub = grade(sub)
+    W, H = canvas; pad = 0.09
+    maxw, maxh = W*(1-2*pad), H*(1-2*pad)
+    sc = min(maxw/sub.width, maxh/sub.height)
+    sub = sub.resize((max(1, int(sub.width*sc)), max(1, int(sub.height*sc))), Image.LANCZOS)
     x = (W - sub.width)//2
-    y = max(int(H*pad), min(int(H*0.64) + int(H*0.15) - sub.height, H - sub.height - int(H*pad)))
+    y = (H - sub.height)//2 if kind == 'flat' else int(H*(1-pad)) - sub.height - int(H*0.03)
     bg = backdrop(W, H)
-    bg.paste(Image.new('RGB', (W, H), (96, 80, 72)), mask=shadows(W, H, sub.split()[3], x, y, sub.width))
+    a = sub.split()[3]
+    shade = shadow_layer(W, H, a, x, y, sub.width, kind)
+    dark = Image.new('RGB', (W, H), (92, 78, 66))
+    bg = Image.composite(dark, bg, shade)
     bg.paste(sub, (x, y), sub)
-    bg = bg.filter(ImageFilter.UnsharpMask(radius=0.8, percent=20, threshold=3))
-    bg.save(OUT/(name+'.jpg'), 'JPEG', quality=86, optimize=True, progressive=True, subsampling=1)
-    return sub.size
+    bg.save(OUT / f'{name}.png', optimize=True)
+    print('wrote', name, canvas, kind, flush=True)
 
-t = time.time()
 for name, spec in SPECS.items():
     if ONLY and name not in ONLY: continue
-    print(f"{name:22} {compose(name, *spec)} {time.time()-t:4.0f}s", flush=True)
+    compose(name, *spec)
