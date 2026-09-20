@@ -67,6 +67,6 @@ setting.
 
 ## Things to confirm with Amiebeth
 
-- Prices in `build.py`: Classic group tiers ($60 / $80 / $100 / from $120) and the three discounts follow the 2024 pricing guide Felicia supplied. Signature custom starting points ($15 / $22 / $32), oversized +$15, gift card $5, corporate per-gift rates, turnaround times, deposit and rush terms are proposals to confirm with Amiebeth.
+- Prices in `build.py` (approved by Felicia 9/20/26, "we will adjust later"): Classic by group $75 / $150 / $250 / 51+ from $4.50 a gift, materials included; standard = up to ~18×14×8 in, large (to 24×18×14) +$10, oversized/odd +$20; Signature custom from $18 / $28 / $40; ribbon upgrade +$4; discounts no bows −$15, pre-boxed −$10, recycled boxes −$10 (repeat clients); delivery from $50; receiving $15/order; rush +25%; 50% deposit. Corporate $9 / $8 / custom.
 - No public hours on the site (Amiebeth works full-time; wrapping is by appointment). Pickup & delivery is from $50 round trip beyond 5 miles.
 - Whether to show the studio street address (currently hidden: city + ZIP only).

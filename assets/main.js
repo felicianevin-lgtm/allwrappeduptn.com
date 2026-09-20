@@ -49,9 +49,9 @@
   }
 
   // Price estimator: Classic wrapping is priced by the group, materials included
-  function groupPrice(n) { if (n <= 0) return 0; if (n <= 10) return 60; if (n <= 25) return 80; if (n <= 50) return 100; return 120 + (n - 51) * 2.4; }
+  function groupPrice(n) { if (n <= 0) return 0; if (n <= 10) return 75; if (n <= 25) return 150; if (n <= 50) return 250; return 250 + (n - 50) * 4.5; }
   var PER_GIFT = { notes: 2, luxe: 4 };
-  var OVERSIZED = 15, DELIVERY = 50;
+  var LARGE = 10, OVERSIZED = 20, DELIVERY = 50;
   var DISCOUNTS = { nobows: 15, boxed: 10, reuse: 10 };
   function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
 
@@ -63,11 +63,12 @@
     function num(name) { var el = form.querySelector('[name="' + name + '"]'); return el ? Math.max(0, parseInt(el.value, 10) || 0) : 0; }
     function on(name) { var el = form.querySelector('[name="' + name + '"]'); return !!(el && el.checked); }
     function calc() {
-      var total = num('gifts'), over = Math.min(num('oversized'), total);
+      var total = num('gifts'), over = Math.min(num('oversized'), total), large = Math.min(num('large'), total - over);
       var lg = form.querySelector('[data-count="gifts"]'); if (lg) lg.textContent = total;
       var lo = form.querySelector('[data-count="oversized"]'); if (lo) lo.textContent = over;
+      var ll = form.querySelector('[data-count="large"]'); if (ll) ll.textContent = large;
       var base = groupPrice(total);
-      var extras = over * OVERSIZED;
+      var extras = over * OVERSIZED + large * LARGE;
       Object.keys(PER_GIFT).forEach(function (k) { if (on('addon_' + k)) extras += total * PER_GIFT[k]; });
       var disc = 0;
       Object.keys(DISCOUNTS).forEach(function (k) { if (on('disc_' + k)) disc += DISCOUNTS[k]; });
@@ -79,14 +80,15 @@
       if (brk) {
         var parts = [];
         if (total) { var tier = total <= 10 ? 'small group' : total <= 25 ? 'medium group' : total <= 50 ? 'large group' : 'extra large group'; parts.push(total + ' gift' + (total === 1 ? '' : 's') + ' · ' + tier + ' ' + money(base)); }
+        if (large) parts.push(large + ' large +' + money(large * LARGE));
         if (over) parts.push(over + ' oversized +' + money(over * OVERSIZED));
-        if (extras - over * OVERSIZED) parts.push('add-ons +' + money(extras - over * OVERSIZED));
+        if (extras - over * OVERSIZED - large * LARGE) parts.push('add-ons +' + money(extras - over * OVERSIZED - large * LARGE));
         if (delivery) parts.push('pickup & delivery +' + money(delivery));
         if (rushFee) parts.push('rush +25%');
         brk.textContent = parts.length ? parts.join(' · ') : 'Add a few gifts to see an estimate.';
       }
       if (save) { save.hidden = !disc; if (disc) save.textContent = 'You save ' + money(disc) + ' with discounts'; }
-      if (link) link.setAttribute('href', '/contact/?gifts=' + total + '&oversized=' + over + '&estimate=' + encodeURIComponent(out ? out.textContent : ''));
+      if (link) link.setAttribute('href', '/contact/?gifts=' + total + '&large=' + large + '&oversized=' + over + '&estimate=' + encodeURIComponent(out ? out.textContent : ''));
     }
     form.addEventListener('input', calc); form.addEventListener('change', calc); calc();
   });
@@ -101,7 +103,7 @@
     if (gifts && count && !count.value) count.value = gifts;
     if (gifts && msg && !msg.value) {
       msg.value = 'Estimate from your website: ' + (p.get('estimate') || '') + '\n' +
-        'Gifts: ' + (p.get('gifts') || 0) + ', Oversized: ' + (p.get('oversized') || 0) + '\n\n';
+        'Gifts: ' + (p.get('gifts') || 0) + ', Large: ' + (p.get('large') || 0) + ', Oversized: ' + (p.get('oversized') || 0) + '\n\n';
     }
     var type = p.get('type'); var sel = contactForm.querySelector('[name="client_type"]');
     if (type && sel) sel.value = type;
