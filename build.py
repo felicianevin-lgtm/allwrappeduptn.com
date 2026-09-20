@@ -631,6 +631,17 @@ pricing_body = page_head("Pricing", "Gift wrapping prices &amp; packages",
   </div>
 </section>
 
+<section>
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Booking &amp; deposit</span><h2>Space is limited, first come first served</h2><p>Amiebeth wraps every gift herself, so there are only so many slots in a season and December fills first.</p></div>
+    <div class="grid grid-3">
+      <div class="card reveal"><div class="icon">{ICONS['calendar']}</div><h3>Dates are held in booking order</h3><p>Your date is confirmed when the deposit is in. Once a week is full, it is full.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['shield']}</div><h3>50% deposit reserves your spot</h3><p>The balance is due at delivery or pickup. Cash, Venmo or personal check.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Non-refundable once materials are bought</h3><p>Paper, ribbon and embellishments are purchased for your order right after booking. Need to move your date? One reschedule is free when space allows.</p></div>
+    </div>
+  </div>
+</section>
+
 <section class="pinkbg">
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Estimate</span><h2>Build an estimate for your order</h2></div>
@@ -721,6 +732,17 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
   </div>
 </section>
 
+<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Booking &amp; deposit</span><h2>Space is limited, first come first served</h2><p>Amiebeth wraps every gift herself, so there are only so many slots in a season and December fills first.</p></div>
+    <div class="grid grid-3">
+      <div class="card reveal"><div class="icon">{ICONS['calendar']}</div><h3>Dates are held in booking order</h3><p>Your date is confirmed when the deposit is in. Once a week is full, it is full.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['shield']}</div><h3>50% deposit reserves your spot</h3><p>The balance is due at delivery or pickup. Cash, Venmo or personal check.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Non-refundable once materials are bought</h3><p>Paper, ribbon and embellishments are purchased for your order right after booking. Need to move your date? One reschedule is free when space allows.</p></div>
+    </div>
+  </div>
+</section>
+
 <section>
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Year round</span><h2>Every holiday on the calendar</h2></div>
@@ -733,7 +755,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
   </div>
 </section>
 
-{cta_band("Reserve your holiday date", "December dates are confirmed in order of booking. A 50% deposit holds yours. Quotes are complimentary.", ("Book holiday wrapping", "contact.html?type=family"), ("Text " + PHONE, "sms:" + PHONE_TEL))}
+{cta_band("Reserve your holiday date", "Space is limited and December dates go in the order deposits come in. A 50% deposit holds yours. Quotes are complimentary.", ("Book holiday wrapping", "contact.html?type=family"), ("Text " + PHONE, "sms:" + PHONE_TEL))}
 '''
 pages.append(dict(slug="holiday-gift-wrapping.html", crumb="Holiday gift wrapping",
   title="Christmas Gift Wrapping Service | Sweetwater, Knoxville & Chattanooga",
@@ -810,6 +832,7 @@ faqs = [
  ("Can you wrap the gifts for an office party or white elephant?", "Yes, and it is one of our favorite jobs. Send every gift, in a bag with a note of who it is from if you like, and it all comes back wrapped so the surprise is real for everyone, including whoever organized it. We can wrap in one coordinated style or make every gift look different."),
  ("Do you wrap gift cards?", "Yes. A gift card in a plain envelope is easy to overlook. We dress it up in a small box with ribbon and a tag for $5, or build it into a themed wrap that hints at where the card is from."),
  ("What payment methods do you accept?", "Cash, Venmo and personal check. A 50% deposit reserves your date and the balance is due at delivery. Business accounts can be invoiced."),
+ ("Is the deposit refundable?", "The deposit holds your date and pays for your materials, which are bought right after you book, so it is non-refundable once materials have been purchased. If your plans change, one reschedule is free when space allows. Space is limited and dates are held in the order deposits come in, so booking early matters in November and December."),
  ("Where are you located?", f"{BIZ} is home-based in {CITY}, Tennessee, right off I-75 between Knoxville and Chattanooga. Drop-offs are by appointment. Call or text {PHONE} to schedule."),
  ("Are my gifts safe with you?", "Every gift is logged at intake with a description, stored safely and returned with a checklist. Corporate orders can be labeled by recipient or department for easy distribution."),
 ]
