@@ -7,6 +7,9 @@ prices, phone, email and service area live at the top of that file). Edit, then:
 
 and the HTML, sitemap.xml, robots.txt, CNAME and site.webmanifest are rewritten.
 
+Pages use clean URLs: `/pricing/`, `/contact/` and so on (each is `<page>/index.html`).
+The old `<page>.html` files are tiny redirect stubs so bookmarks keep working; leave them.
+
 ## 1. Give it its own repo + GitHub Pages (recommended)
 
 This folder is self-contained (all links relative). To launch it on its own domain:

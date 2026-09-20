@@ -86,7 +86,7 @@
         brk.textContent = parts.length ? parts.join(' · ') : 'Add a few gifts to see an estimate.';
       }
       if (save) { save.hidden = !disc; if (disc) save.textContent = 'You save ' + money(disc) + ' with discounts'; }
-      if (link) link.setAttribute('href', 'contact.html?gifts=' + total + '&oversized=' + over + '&estimate=' + encodeURIComponent(out ? out.textContent : ''));
+      if (link) link.setAttribute('href', '/contact/?gifts=' + total + '&oversized=' + over + '&estimate=' + encodeURIComponent(out ? out.textContent : ''));
     }
     form.addEventListener('input', calc); form.addEventListener('change', calc); calc();
   });

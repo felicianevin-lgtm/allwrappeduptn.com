@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Builds the static pages for All Wrapped Up (allwrappeduptn.com).
-Run:  python3 build.py   — writes *.html + sitemap.xml next to this file.
+Run:  python3 build.py   — writes index.html, <page>/index.html (clean URLs), redirect stubs at the old <page>.html paths, sitemap.xml next to this file.
 All page copy lives in this file so nav/footer/SEO tags stay consistent."""
-import datetime, html, pathlib
+import datetime, html, pathlib, re
 
 ROOT = pathlib.Path(__file__).parent
 SITE = "https://allwrappeduptn.com"
@@ -106,7 +106,7 @@ def esc(s): return html.escape(s, quote=True)
 # ---------- layout ----------
 def layout(page):
     slug = page["slug"]
-    url = SITE + "/" + ("" if slug == "index.html" else slug)
+    url = SITE + "/" + ("" if slug == "index.html" else slug[:-5] + "/")
     title = page["title"]; desc = page["desc"]
     CUR = ' aria-current="page"'
     nav_links = "".join(f'<a href="{h}"{CUR if h == slug else ""}>{t}</a>' for h, t in NAV)
@@ -917,14 +917,41 @@ pages.append(dict(slug="404.html", crumb="Not found", noindex=True,
 <section><div class="wrap" style="text-align:center"><div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="index.html">Home</a><a class="btn btn-secondary" href="pricing.html">Pricing</a><a class="btn btn-secondary" href="contact.html">Get a quote</a></div></div></section>'''))
 
 # ---------- write ----------
+PAGE_SLUGS = [p["slug"] for p in pages]
+def clean_links(html):
+    """Rewrite relative page/asset links to clean root-relative URLs (/pricing/, /assets/...)."""
+    def fix(m):
+        attr, q, u = m.group(1), m.group(2), m.group(3)
+        if u.startswith(("http", "mailto:", "tel:", "sms:", "data:", "#", "/")): return m.group(0)
+        path, sep, frag = u.partition("#")
+        path, qsep, query = path.partition("?")
+        if path == "index.html": path = "/"
+        elif path.endswith(".html") and path in PAGE_SLUGS: path = "/" + path[:-5] + "/"
+        elif path.startswith("assets/") or path == "site.webmanifest": path = "/" + path
+        else: return m.group(0)
+        return f'{attr}={q}{path}{qsep}{query}{sep}{frag}{q}'
+    html = re.sub(r'(href|src|action|content)=(")([^"]+)"', fix, html)
+    # absolute page URLs inside JSON-LD / hidden fields
+    for slug in PAGE_SLUGS:
+        if slug == "index.html": continue
+        html = html.replace(f"{SITE}/{slug}", f"{SITE}/{slug[:-5]}/")
+    return html
+
 for p in pages:
-    (ROOT / p["slug"]).write_text(layout(p), encoding="utf-8")
+    out = clean_links(layout(p))
+    if p["slug"] in ("index.html", "404.html"):
+        (ROOT / p["slug"]).write_text(out, encoding="utf-8")
+    else:
+        d = ROOT / p["slug"][:-5]; d.mkdir(exist_ok=True)
+        (d / "index.html").write_text(out, encoding="utf-8")
+        # old .html address keeps working: instant redirect to the clean URL
+        (ROOT / p["slug"]).write_text(f'<!doctype html><meta charset="utf-8"><title>{esc(p["title"])}</title><link rel="canonical" href="{SITE}/{p["slug"][:-5]}/"><meta http-equiv="refresh" content="0; url=/{p["slug"][:-5]}/"><meta name="robots" content="noindex"><a href="/{p["slug"][:-5]}/">Continue</a>', encoding="utf-8")
     print("wrote", p["slug"])
 
 prio = {"index.html": "1.0", "corporate-gift-wrapping.html": "0.9", "holiday-gift-wrapping.html": "0.9", "pricing.html": "0.9", "services.html": "0.8", "contact.html": "0.8", "about.html": "0.6", "faq.html": "0.7"}
-urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n" for s, pr in prio.items())
+urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n" for s, pr in prio.items())
 (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
-(ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you.html\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+(ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you/\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
 (ROOT / "CNAME").write_text("allwrappeduptn.com\n", encoding="utf-8")
-(ROOT / "site.webmanifest").write_text(_j.dumps({"name": f"{BIZ} — {TAG}", "short_name": BIZ, "start_url": "./index.html", "display": "standalone", "background_color": "#fffdfa", "theme_color": "#b23a5e", "icons": [{"src": "assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}, {"src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml"}]}, indent=2), encoding="utf-8")
+(ROOT / "site.webmanifest").write_text(_j.dumps({"name": f"{BIZ} — {TAG}", "short_name": BIZ, "start_url": "/", "display": "standalone", "background_color": "#fffdfa", "theme_color": "#b23a5e", "icons": [{"src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}, {"src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml"}]}, indent=2), encoding="utf-8")
 print("wrote sitemap.xml robots.txt CNAME site.webmanifest")
