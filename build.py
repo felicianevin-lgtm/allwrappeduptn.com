@@ -17,6 +17,8 @@ REGION = "TN"
 ZIP = "37874"
 AREA = ["Sweetwater", "Madisonville", "Athens", "Loudon", "Lenoir City", "Maryville", "Farragut", "Knoxville", "Cleveland", "Ooltewah", "Chattanooga"]
 TODAY = datetime.date.today().isoformat()
+import hashlib as _h
+ASSET_V = _h.md5((ROOT / "assets" / "main.js").read_bytes() + (ROOT / "assets" / "style.css").read_bytes()).hexdigest()[:8]  # cache-buster
 # Where quote requests are delivered. Kept separate from the public EMAIL so the site
 # can be tested without contacting Amiebeth. Change to EMAIL when she is ready, rebuild,
 # push, and submit one test form: FormSubmit then sends a one-time activation link there.
@@ -145,7 +147,7 @@ def layout(page):
 <link rel="preload" href="assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v={ASSET_V}">
 {LOCAL_BUSINESS_LD}
 {crumbs_ld}
 {extra_ld}
@@ -196,7 +198,7 @@ def layout(page):
   </div>
 </footer>
 <div class="mobile-bar"><a class="btn btn-secondary" href="tel:{PHONE_TEL}">{ICONS['phone']}Call</a><a class="btn btn-primary" href="contact.html">{ICONS['gift']}Get a Quote</a></div>
-<script src="assets/main.js" defer></script>
+<script src="assets/main.js?v={ASSET_V}" defer></script>
 </body>
 </html>
 '''
