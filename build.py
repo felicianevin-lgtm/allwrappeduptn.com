@@ -351,7 +351,12 @@ HOME_QUOTE = f'''<section class="pinkbg" id="free-quote">
 </section>'''
 
 # Home page hero photo: (file stem in assets/photos, alt text, (width, height), CSS aspect ratio of the frame)
-HERO_PHOTO = ("sq-rainbow-box", "Large gift box in watercolor-dot paper with aqua and confetti ribbon, wrapped by All Wrapped Up", (1200, 1200), "1/1")
+# Hero photo rotates by season: the Christmas stack from October through December 26,
+# the rainbow box the rest of the year. Rebuild (python3 build.py) to pick up the change.
+HERO_HOLIDAY = ("land-christmas-stack", "A styled display of six Christmas gifts wrapped by All Wrapped Up: plaid, nutcracker, North Pole, pom-pom stripe and purple snowflake papers with hand-tied bows", (1400, 933), "3/2")
+HERO_EVERYDAY = ("sq-rainbow-box", "Large gift box in watercolor-dot paper with aqua and confetti ribbon, wrapped by All Wrapped Up", (1200, 1200), "1/1")
+_today = datetime.date.today()
+HERO_PHOTO = HERO_HOLIDAY if (_today.month in (10, 11) or (_today.month == 12 and _today.day <= 26)) else HERO_EVERYDAY
 
 # ---------- pages ----------
 pages = []
