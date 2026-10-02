@@ -23,7 +23,7 @@ ASSET_V = _h.md5((ROOT / "assets" / "main.js").read_bytes() + (ROOT / "assets" /
 # Where quote requests are delivered. Kept separate from the public EMAIL so the site
 # can be tested without contacting Amiebeth. Change to EMAIL when she is ready, rebuild,
 # push, and submit one test form: FormSubmit then sends a one-time activation link there.
-FORM_EMAIL = "felicia.nevin@gmail.com"
+FORM_EMAIL = "team@norcaladmin.com"
 FORM_ACTION = f"https://formsubmit.co/{FORM_EMAIL}"
 # Copies of every quote request also go here (no activation needed for CC addresses).
 FORM_CC = ""   # no CC: a CC address is visible in the page source. Forward leads from the FORM_EMAIL inbox instead.

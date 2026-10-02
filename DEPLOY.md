@@ -40,7 +40,7 @@ If a different domain is chosen, change `SITE` at the top of `build.py` and the
 ## 3. Contact form (one-time activation)
 
 The quote form posts to FormSubmit, which is free and needs no account. Requests
-currently go to **Felicia** (`FORM_EMAIL` at the top of `build.py`) so Amiebeth
+currently go to **team@norcaladmin.com** (`FORM_EMAIL` at the top of `build.py`) so Amiebeth
 receives nothing during setup and testing. **The first submission sends a one-time
 activation email to that address; click the link once.** Every request after that
 arrives as an email table and the visitor lands on `thank-you.html`.
@@ -80,9 +80,10 @@ Three settings at the top of `build.py` control the current setup:
   price list back; nothing is lost.
 - Amiebeth's phone, email and surname are kept off the site entirely (`OWNER_PUBLIC` is
   first name only; no telephone/email in the schema). Visitors contact her only through
-  the form. Requests arrive at `FORM_EMAIL` (Felicia). To pass them to Amiebeth without
-  publishing her address, set up a Gmail filter on Felicia's inbox: from
-  `formsubmit.co` → forward to abthearp@gmail.com. (A `_cc` field would expose her
+  the form. Requests arrive at `FORM_EMAIL` (team@norcaladmin.com, the NorCal Admin Google
+  Workspace hub). To pass them to Amiebeth without publishing her address, set up a
+  Gmail filter on that inbox: from `formsubmit.co` → forward to abthearp@gmail.com
+  (Gmail first sends her a one-time forwarding-confirmation email to click). (A `_cc` field would expose her
   address in the page source, so `FORM_CC` is intentionally empty.) To hide Felicia's
   address too, FormSubmit emails a random alias string after activation; put that
   string in `FORM_EMAIL` in place of the address.
