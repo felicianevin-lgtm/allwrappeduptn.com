@@ -24,7 +24,11 @@ ASSET_V = _h.md5((ROOT / "assets" / "main.js").read_bytes() + (ROOT / "assets" /
 # can be tested without contacting Amiebeth. Change to EMAIL when she is ready, rebuild,
 # push, and submit one test form: FormSubmit then sends a one-time activation link there.
 FORM_EMAIL = "team@norcaladmin.com"
-FORM_ACTION = f"https://formsubmit.co/{FORM_EMAIL}"
+# Preferred: a Google Apps Script web-app URL (see form-handler/Code.gs). Submissions are logged
+# to a Google Sheet and emailed to Amiebeth with nothing for anyone to click or activate.
+# Leave empty to fall back to FormSubmit (which needs one activation click at FORM_EMAIL).
+FORM_ENDPOINT = ""
+FORM_ACTION = FORM_ENDPOINT or f"https://formsubmit.co/{FORM_EMAIL}"
 # Copies of every quote request also go here (no activation needed for CC addresses).
 FORM_CC = ""   # no CC: a CC address is visible in the page source. Forward leads from the FORM_EMAIL inbox instead.
 # Lead-generation mode: hide all prices and the pricing page, put a quote form on the
@@ -314,16 +318,19 @@ def estimator(compact=False):
   </div>
 </form>'''
 
-FORM_HIDDEN = f'''<input type="hidden" name="_subject" value="New gift wrapping quote request">
+FORM_HIDDEN = (f'''<input type="hidden" name="page" value="">
+      <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">''' if FORM_ENDPOINT else f'''<input type="hidden" name="_subject" value="New gift wrapping quote request">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_next" value="{SITE}/thank-you/">
       <input type="hidden" name="_autoresponse" value="Thanks for reaching out to All Wrapped Up. We received your request and will reply with a free quote within one business day. If you have a deadline, mention it in your message and we will prioritize it.">
       {f'<input type="hidden" name="_cc" value="{FORM_CC}">' if FORM_CC and FORM_CC != FORM_EMAIL else ''}
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">'''
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">''')
+FORM_ATTRS = f'data-endpoint="script" data-thanks="{SITE}/thank-you/"' if FORM_ENDPOINT else f'data-mailto-to="{FORM_EMAIL}"'
+
 
 def quote_form():
     """Short lead form for the home page (same destination as the contact form)."""
-    return f'''<form class="form-card reveal" data-contact data-mailto-to="{FORM_EMAIL}" action="{FORM_ACTION}" method="POST" id="quote">
+    return f'''<form class="form-card reveal" data-contact {FORM_ATTRS} action="{FORM_ACTION}" method="POST" id="quote">
       {FORM_HIDDEN}
       <div class="form-row">
         <div class="field"><label for="q-name">Your name *</label><input id="q-name" name="name" required autocomplete="name"></div>
@@ -975,7 +982,7 @@ pages.append(dict(slug="faq.html", crumb="FAQ",
 contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us what you are wrapping and when you need it. Quotes and questions are answered personally within one business day.", "Get a quote") + f'''
 <section>
   <div class="wrap contact-grid">
-    <form class="form-card reveal" data-contact data-mailto-to="{FORM_EMAIL}" action="{FORM_ACTION}" method="POST">
+    <form class="form-card reveal" data-contact {FORM_ATTRS} action="{FORM_ACTION}" method="POST">
       {FORM_HIDDEN}
       <div class="form-row">
         <div class="field"><label for="c-name">Your name *</label><input id="c-name" name="name" required autocomplete="name"></div>
@@ -997,7 +1004,7 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
       <div class="field"><label for="c-reach">Best way to reach you</label><select id="c-reach" name="preferred_contact"><option>Email</option><option>Text</option><option>Phone call</option></select></div>
       <div class="field"><label for="c-msg">Tell us about the gifts, or ask your question</label><textarea id="c-msg" name="message" rows="5" placeholder="Sizes, colors you love, brand colors, anything oversized, event details, or anything you would like to know…"></textarea></div>
       <button class="btn btn-primary btn-lg btn-block" type="submit">Send my quote request</button>
-      <p class="form-note">Or <a href="#" data-mailto>open this request in your email app</a>. Your information is never shared.</p>
+      <p class="form-note">{"" if FORM_ENDPOINT else 'Or <a href="#" data-mailto>open this request in your email app</a>. '}Your information is never shared.</p>
     </form>
     <aside class="info-card reveal">
       <h3>Reach {OWNER.split()[0]} directly</h3>

@@ -108,6 +108,17 @@
     var type = p.get('type'); var sel = contactForm.querySelector('[name="client_type"]');
     if (type && sel) sel.value = type;
     // mailto fallback: builds an email if the form endpoint is unreachable (works offline / before form activation)
+    // Apps Script endpoint: post in the background, then go to the thank-you page (plain submit still works without JS)
+    if (contactForm.getAttribute('data-endpoint') === 'script') {
+      var pageField = contactForm.querySelector('[name="page"]'); if (pageField) pageField.value = location.pathname;
+      contactForm.addEventListener('submit', function (e) {
+        if (!contactForm.checkValidity()) return;
+        e.preventDefault();
+        var btn = contactForm.querySelector('[type="submit"]'); if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+        var done = function () { location.href = contactForm.getAttribute('data-thanks') || '/thank-you/'; };
+        fetch(contactForm.action, { method: 'POST', mode: 'no-cors', body: new FormData(contactForm) }).then(done, done);
+      });
+    }
     var fallback = contactForm.querySelector('[data-mailto]');
     if (fallback) {
       fallback.addEventListener('click', function (e) {
