@@ -70,3 +70,20 @@ setting.
 - Prices in `build.py` (approved by Felicia 9/20/26, "we will adjust later"): Classic by group $75 / $150 / $250 / 51+ from $4.50 a gift, materials included; standard = up to ~18×14×8 in, large (to 24×18×14) +$10, oversized/odd +$20; Signature custom from $18 / $28 / $40; ribbon upgrade +$4; discounts no bows −$15, pre-boxed −$10, recycled boxes −$10 (repeat clients); delivery from $50; receiving $15/order; rush +25%; 50% deposit. Corporate $9 / $8 / custom.
 - No public hours on the site (Amiebeth works full-time; wrapping is by appointment). Pickup & delivery is from $50 round trip beyond 5 miles.
 - Whether to show the studio street address (currently hidden: city + ZIP only).
+
+## Lead-generation mode (current)
+
+Three settings at the top of `build.py` control the current setup:
+
+- `SHOW_PRICING = False` hides every price, removes the pricing page and nav link, and
+  puts a free-quote form on the home page. Set it to `True` and rebuild to bring the full
+  price list back; nothing is lost.
+- `FORM_CC = EMAIL` sends a copy of every quote request to Amiebeth automatically. The
+  primary address (`FORM_EMAIL`, Felicia) is the one FormSubmit activates; CC addresses
+  need no activation. Set `FORM_CC = ""` to stop copying her.
+- `META_PIXEL_ID = ""` adds the Meta (Facebook) Pixel on every page and fires a "Lead"
+  event on the thank-you page once an ID is filled in. Empty means no tracking at all.
+  For ads: Meta Ads Manager → Events Manager → Connect data source → Web → copy the
+  Pixel ID (a long number), paste it here, rebuild, push.
+
+After any change: `python3 build.py`, then commit and push. Live in about a minute.

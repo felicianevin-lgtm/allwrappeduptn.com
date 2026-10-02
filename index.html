@@ -28,7 +28,8 @@
 <link rel="preload" href="/assets/fonts/cormorant-garamond.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/fonts.css">
-<link rel="stylesheet" href="/assets/style.css?v=20937e05">
+<link rel="stylesheet" href="/assets/style.css?v=f5f90a9e">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -68,7 +69,7 @@
   <div class="wrap nav">
     <a class="brand" href="/" aria-label="All Wrapped Up home"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 34h48v20a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4z" fill="#f4a6bf"/><rect x="6" y="26" width="52" height="10" rx="2" fill="#e5648f"/><rect x="27" y="26" width="10" height="32" fill="#fde4ee"/><path d="M32 26c-6-2-14-10-10-14s10 6 10 14zm0 0c6-2 14-10 10-14s-10 6-10 14z" fill="#b23a5e"/><circle cx="32" cy="25" r="4" fill="#8e2c4a"/></svg><span><span class="brand-name">All Wrapped Up</span><span class="brand-sub">Ribbons & Bows</span></span></a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span><span></span></button>
-    <nav class="nav-links" id="nav-links" aria-label="Main"><a href="/" aria-current="page">Home</a><a href="/corporate-gift-wrapping/">Corporate</a><a href="/services/">Occasions</a><a href="/pricing/">Pricing</a><a href="/holiday-gift-wrapping/">Holiday</a><a href="/about/">About</a><a href="/faq/">FAQ</a><a class="nav-cta" href="/contact/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-4-6-1s4 1 6 1zm0 0c2-4 6-4 6-1s-4 1-6 1z"/></svg>Get a Quote</a></nav>
+    <nav class="nav-links" id="nav-links" aria-label="Main"><a href="/" aria-current="page">Home</a><a href="/corporate-gift-wrapping/">Corporate</a><a href="/services/">Occasions</a><a href="/holiday-gift-wrapping/">Holiday</a><a href="/about/">About</a><a href="/faq/">FAQ</a><a class="nav-cta" href="/contact/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-4-6-1s4 1 6 1zm0 0c2-4 6-4 6-1s-4 1-6 1z"/></svg>Get a Quote</a></nav>
   </div>
 </header>
 <main id="main">
@@ -81,7 +82,7 @@
       <p class="lede">Themed, custom and classic gift wrapping, from a shirt-and-tie for Dad to a whole Christmas in one family's colors. Corporate orders, client gifts and family celebrations, collected and delivered across East Tennessee.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="/contact/">Request a free quote</a>
-        <a class="btn btn-secondary btn-lg" href="/pricing/">See packages &amp; pricing</a>
+        <a class="btn btn-secondary btn-lg" href="#free-quote">Get a free quote</a>
       </div>
       <ul class="hero-proof">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg> Pickup &amp; delivery available</li>
@@ -141,45 +142,37 @@
   </div>
 </section>
 
-<section class="pinkbg">
+<section class="pinkbg" id="free-quote">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Transparent pricing</span><h2>Group pricing, materials included</h2><p>Classic wrapping is priced by the number of gifts, with paper, ribbon, bows and tags included. Signature custom wraps are quoted by the gift. Slide to see an estimate.</p></div>
-    <form class="estimator reveal" data-estimator onsubmit="return false">
-  <div>
-    <span class="kicker">Instant estimate</span>
-    <h3>Estimate your order</h3>
-    <p class="note">Classic wrapping is priced by the group, with all materials included. Signature custom wraps are quoted by the gift.</p>
-    <div class="field"><label for="e-gifts">Number of gifts — <span data-count="gifts">0</span></label><input type="range" id="e-gifts" name="gifts" min="0" max="120" value="18"></div>
-    <div class="field"><label for="e-large">Large gifts among them (big toys, tool sets, boxed baskets) — <span data-count="large">0</span></label><input type="range" id="e-large" name="large" min="0" max="30" value="0"></div>
-    <div class="field"><label for="e-over">Oversized or odd shapes among them (bikes, strollers, guitars, baskets) — <span data-count="oversized">0</span></label><input type="range" id="e-over" name="oversized" min="0" max="20" value="0"></div>
-    <div class="field"><span class="hint" style="font-weight:800;color:var(--ink-soft)">Add-ons</span>
-      <div class="chips">
-        <label class="chip"><input type="checkbox" name="addon_notes"><span>Handwritten note cards</span></label>
-        <label class="chip"><input type="checkbox" name="addon_luxe"><span>Ribbon upgrade</span></label>
-        <label class="chip"><input type="checkbox" name="delivery"><span>Pickup &amp; delivery</span></label>
-        <label class="chip"><input type="checkbox" name="rush"><span>Rush (under 72 hrs)</span></label>
-      </div></div>
-    <div class="field"><span class="hint" style="font-weight:800;color:var(--ink-soft)">Discounts</span>
-      <div class="chips">
-        <label class="chip"><input type="checkbox" name="disc_nobows"><span>Just wrapping, no bows</span></label>
-        <label class="chip"><input type="checkbox" name="disc_boxed"><span>Everything boxed &amp; ready</span></label>
-        <label class="chip"><input type="checkbox" name="disc_reuse"><span>Reusing last year's boxes (repeat clients)</span></label>
-      </div></div>
-  </div>
-  <div class="estimate-out">
-    <span class="label">Estimated range</span>
-    <div class="amount" data-amount aria-live="polite">$0</div>
-    <span class="save" data-save hidden></span>
-    <p class="breakdown" data-breakdown>Add a few gifts to see an estimate.</p>
-    <a class="btn btn-primary" data-quote-link href="/contact/">Request a written quote</a>
-    <p class="fineprint" style="margin-top:12px">This is an estimate, not a quote. Your exact price is confirmed in writing once we see the gifts and agree on the details. Drop-off in Sweetwater is free; pickup &amp; delivery is from $50 round trip.</p>
-  </div>
-</form>
-    <p style="text-align:center;margin-top:22px"><a class="btn btn-secondary" href="/pricing/">Full price list &amp; packages</a></p>
+    <div class="section-head reveal"><span class="kicker">Free quote</span><h2>Tell us what you need. We'll send a free quote.</h2><p>Every order is a little different, so every quote is custom and free. Share a few details and Amiebeth will get back to you within one business day.</p></div>
+    <div class="contact-grid" style="grid-template-columns:1fr;max-width:820px;margin:0 auto"><form class="form-card reveal" data-contact data-mailto-to="felicia.nevin@gmail.com" action="https://formsubmit.co/felicia.nevin@gmail.com" method="POST" id="quote">
+      <input type="hidden" name="_subject" value="New gift wrapping quote request">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="https://allwrappeduptn.com/thank-you/">
+      <input type="hidden" name="_autoresponse" value="Thanks for reaching out to All Wrapped Up. We received your request and will reply with a free quote within one business day. For anything urgent, call or text 540-340-4905.">
+      <input type="hidden" name="_cc" value="abthearp@gmail.com">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      <div class="form-row">
+        <div class="field"><label for="q-name">Your name *</label><input id="q-name" name="name" required autocomplete="name"></div>
+        <div class="field"><label for="q-email">Email *</label><input id="q-email" type="email" name="email" required autocomplete="email"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="q-phone">Phone</label><input id="q-phone" type="tel" name="phone" autocomplete="tel"></div>
+        <div class="field"><label for="q-type">I'm wrapping for *</label><select id="q-type" name="client_type" required><option value="">Choose one</option><option value="corporate">A business / corporate event</option><option value="family">My family or household</option><option value="wedding">A wedding</option><option value="shower">A bridal or baby shower</option><option value="birthday">A birthday or anniversary</option><option value="other">Something else</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="q-count">About how many gifts?</label><input id="q-count" type="number" name="gift_count" min="1" inputmode="numeric" placeholder="A rough number is fine"></div>
+        <div class="field"><label for="q-date">Need them by</label><input id="q-date" type="date" name="needed_by"></div>
+      </div>
+      <div class="field"><label for="q-msg">Tell us a little about what you need</label><textarea id="q-msg" name="message" rows="4" placeholder="Sizes, colors, the occasion, anything oversized, pickup or drop-off…"></textarea></div>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">Get my free quote</button>
+      <p class="form-note">No obligation. We reply within one business day, usually sooner. Your information is never shared.</p>
+    </form></div>
+    <p class="fineprint" style="text-align:center;margin-top:16px">Prefer to talk? Call or text <a href="tel:+15403404905"><strong>540-340-4905</strong></a>.</p>
   </div>
 </section>
 
-<section>
+<section id="work">
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Recent work</span><h2>Styles for every occasion</h2><p>Signature custom builds and classic wraps, all from real orders.</p></div>
     <div class="gallery">
@@ -228,7 +221,7 @@
 <section class="cta-band"><div class="wrap reveal">
   <span class="kicker">Get started</span>
   <h2>Ready to hand off the wrapping?</h2><p>Share your gift count and date. Quotes are complimentary and returned within one business day.</p>
-  <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="/contact/">Request a free quote</a><a class="btn btn-secondary btn-lg" href="/pricing/">See pricing</a></div>
+  <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="/contact/">Request a free quote</a><a class="btn btn-secondary btn-lg" href="tel:+15403404905">Call or text 540-340-4905</a></div>
   <p class="contact-line">Call or text <a href="tel:+15403404905">540-340-4905</a> · <a href="mailto:abthearp@gmail.com">abthearp@gmail.com</a></p>
 </div></section>
 
@@ -245,7 +238,7 @@
         <li><a href="/holiday-gift-wrapping/">Holiday gift wrapping</a></li>
         <li><a href="/services/">Weddings &amp; showers</a></li>
         <li><a href="/services/#birthdays">Birthdays &amp; anniversaries</a></li>
-        <li><a href="/pricing/">Pricing &amp; packages</a></li>
+        
       </ul></div>
       <div><h4>Company</h4><ul>
         <li><a href="/about/">About Amiebeth</a></li>
@@ -267,6 +260,6 @@
   </div>
 </footer>
 <div class="mobile-bar"><a class="btn btn-secondary" href="tel:+15403404905"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>Call</a><a class="btn btn-primary" href="/contact/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M5 12v8h14v-8M12 8v12M12 8c-2-4-6-4-6-1s4 1 6 1zm0 0c2-4 6-4 6-1s-4 1-6 1z"/></svg>Get a Quote</a></div>
-<script src="/assets/main.js?v=20937e05" defer></script>
+<script src="/assets/main.js?v=f5f90a9e" defer></script>
 </body>
 </html>

@@ -24,6 +24,14 @@ ASSET_V = _h.md5((ROOT / "assets" / "main.js").read_bytes() + (ROOT / "assets" /
 # push, and submit one test form: FormSubmit then sends a one-time activation link there.
 FORM_EMAIL = "felicia.nevin@gmail.com"
 FORM_ACTION = f"https://formsubmit.co/{FORM_EMAIL}"
+# Copies of every quote request also go here (no activation needed for CC addresses).
+FORM_CC = EMAIL
+# Lead-generation mode: hide all prices and the pricing page, put a quote form on the
+# home page. Flip to True to bring the full price list back.
+SHOW_PRICING = False
+# Meta (Facebook) Pixel ID for ad tracking. Leave empty to include no tracking at all.
+META_PIXEL_ID = ""
+def P(text): return text if SHOW_PRICING else ""
 
 NAV = [
     ("index.html", "Home"),
@@ -34,6 +42,7 @@ NAV = [
     ("about.html", "About"),
     ("faq.html", "FAQ"),
 ]
+if not SHOW_PRICING: NAV = [n for n in NAV if n[0] != "pricing.html"]
 
 # ---------- SVG helpers ----------
 def bow_logo():
@@ -106,6 +115,15 @@ ICONS = {
 def esc(s): return html.escape(s, quote=True)
 
 # ---------- layout ----------
+def pixel(page):
+    if not META_PIXEL_ID: return ""
+    lead = "fbq('track','Lead');" if page["slug"] == "thank-you.html" else ""
+    return ("<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};"
+            "if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];"
+            "s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');"
+            f"fbq('init','{META_PIXEL_ID}');fbq('track','PageView');{lead}</script>"
+            f'<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id={META_PIXEL_ID}&ev=PageView&noscript=1"></noscript>')
+
 def layout(page):
     slug = page["slug"]
     url = SITE + "/" + ("" if slug == "index.html" else slug[:-5] + "/")
@@ -148,6 +166,7 @@ def layout(page):
 <link rel="preload" href="assets/fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/style.css?v={ASSET_V}">
+{pixel(page)}
 {LOCAL_BUSINESS_LD}
 {crumbs_ld}
 {extra_ld}
@@ -176,7 +195,7 @@ def layout(page):
         <li><a href="holiday-gift-wrapping.html">Holiday gift wrapping</a></li>
         <li><a href="services.html">Weddings &amp; showers</a></li>
         <li><a href="services.html#birthdays">Birthdays &amp; anniversaries</a></li>
-        <li><a href="pricing.html">Pricing &amp; packages</a></li>
+        {P('<li><a href="pricing.html">Pricing &amp; packages</a></li>')}
       </ul></div>
       <div><h4>Company</h4><ul>
         <li><a href="about.html">About {OWNER.split()[0]}</a></li>
@@ -234,7 +253,8 @@ LOCAL_BUSINESS_LD = f'''<script type="application/ld+json">
 }}
 </script>'''
 
-def cta_band(h, p, primary=("Request a free quote", "contact.html"), secondary=("See pricing", "pricing.html")):
+def cta_band(h, p, primary=("Request a free quote", "contact.html"), secondary=None):
+    secondary = secondary or (("See pricing", "pricing.html") if SHOW_PRICING else ("Call or text " + PHONE, "tel:" + PHONE_TEL))
     return f'''<section class="cta-band"><div class="wrap reveal">
   <span class="kicker">Get started</span>
   <h2>{h}</h2><p>{p}</p>
@@ -282,10 +302,53 @@ def estimator(compact=False):
   </div>
 </form>'''
 
+FORM_HIDDEN = f'''<input type="hidden" name="_subject" value="New gift wrapping quote request">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" value="{SITE}/thank-you/">
+      <input type="hidden" name="_autoresponse" value="Thanks for reaching out to All Wrapped Up. We received your request and will reply with a free quote within one business day. For anything urgent, call or text {PHONE}.">
+      {f'<input type="hidden" name="_cc" value="{FORM_CC}">' if FORM_CC and FORM_CC != FORM_EMAIL else ''}
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">'''
+
+def quote_form():
+    """Short lead form for the home page (same destination as the contact form)."""
+    return f'''<form class="form-card reveal" data-contact data-mailto-to="{FORM_EMAIL}" action="{FORM_ACTION}" method="POST" id="quote">
+      {FORM_HIDDEN}
+      <div class="form-row">
+        <div class="field"><label for="q-name">Your name *</label><input id="q-name" name="name" required autocomplete="name"></div>
+        <div class="field"><label for="q-email">Email *</label><input id="q-email" type="email" name="email" required autocomplete="email"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="q-phone">Phone</label><input id="q-phone" type="tel" name="phone" autocomplete="tel"></div>
+        <div class="field"><label for="q-type">I'm wrapping for *</label><select id="q-type" name="client_type" required><option value="">Choose one</option><option value="corporate">A business / corporate event</option><option value="family">My family or household</option><option value="wedding">A wedding</option><option value="shower">A bridal or baby shower</option><option value="birthday">A birthday or anniversary</option><option value="other">Something else</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="q-count">About how many gifts?</label><input id="q-count" type="number" name="gift_count" min="1" inputmode="numeric" placeholder="A rough number is fine"></div>
+        <div class="field"><label for="q-date">Need them by</label><input id="q-date" type="date" name="needed_by"></div>
+      </div>
+      <div class="field"><label for="q-msg">Tell us a little about what you need</label><textarea id="q-msg" name="message" rows="4" placeholder="Sizes, colors, the occasion, anything oversized, pickup or drop-off…"></textarea></div>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">Get my free quote</button>
+      <p class="form-note">No obligation. We reply within one business day, usually sooner. Your information is never shared.</p>
+    </form>'''
+
+HOME_QUOTE = f'''<section class="pinkbg" id="free-quote">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Free quote</span><h2>Tell us what you need. We'll send a free quote.</h2><p>Every order is a little different, so every quote is custom and free. Share a few details and {OWNER.split()[0]} will get back to you within one business day.</p></div>
+    <div class="contact-grid" style="grid-template-columns:1fr;max-width:820px;margin:0 auto">{quote_form()}</div>
+    <p class="fineprint" style="text-align:center;margin-top:16px">Prefer to talk? Call or text <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>.</p>
+  </div>
+</section>'''
+
 # ---------- pages ----------
 pages = []
 
 # HOME
+HOME_PRICING = f'''<section class="pinkbg">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Transparent pricing</span><h2>Group pricing, materials included</h2><p>Classic wrapping is priced by the number of gifts, with paper, ribbon, bows and tags included. Signature custom wraps are quoted by the gift. Slide to see an estimate.</p></div>
+    {estimator(compact=True)}
+    <p style="text-align:center;margin-top:22px"><a class="btn btn-secondary" href="pricing.html">Full price list &amp; packages</a></p>
+  </div>
+</section>'''
 home_body = f'''
 <section class="hero">
   <div class="wrap">
@@ -295,7 +358,7 @@ home_body = f'''
       <p class="lede">Themed, custom and classic gift wrapping, from a shirt-and-tie for Dad to a whole Christmas in one family's colors. Corporate orders, client gifts and family celebrations, collected and delivered across East Tennessee.</p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="contact.html">Request a free quote</a>
-        <a class="btn btn-secondary btn-lg" href="pricing.html">See packages &amp; pricing</a>
+        {'<a class="btn btn-secondary btn-lg" href="pricing.html">See packages &amp; pricing</a>' if SHOW_PRICING else '<a class="btn btn-secondary btn-lg" href="#free-quote">Get a free quote</a>'}
       </div>
       <ul class="hero-proof">
         <li>{ICONS['check']} Pickup &amp; delivery available</li>
@@ -355,15 +418,9 @@ home_body = f'''
   </div>
 </section>
 
-<section class="pinkbg">
-  <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Transparent pricing</span><h2>Group pricing, materials included</h2><p>Classic wrapping is priced by the number of gifts, with paper, ribbon, bows and tags included. Signature custom wraps are quoted by the gift. Slide to see an estimate.</p></div>
-    {estimator(compact=True)}
-    <p style="text-align:center;margin-top:22px"><a class="btn btn-secondary" href="pricing.html">Full price list &amp; packages</a></p>
-  </div>
-</section>
+{HOME_PRICING if SHOW_PRICING else HOME_QUOTE}
 
-<section>
+<section id="work">
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Recent work</span><h2>Styles for every occasion</h2><p>Signature custom builds and classic wraps, all from real orders.</p></div>
     <div class="gallery">
@@ -418,7 +475,33 @@ pages.append(dict(slug="index.html", crumb="Home",
   body=home_body))
 
 # CORPORATE
-corp_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Service","serviceType":"Corporate gift wrapping","name":"Corporate Gift Wrapping Service","provider":{{"@id":"{SITE}/#business"}},"areaServed":[{",".join(f'{{"@type":"City","name":"{c}"}}' for c in AREA)}],"description":"Bulk gift wrapping for corporate holiday parties, client gifts and employee appreciation with brand-color ribbon, logo gift tags, pickup and delivery across East Tennessee.","offers":{{"@type":"Offer","priceCurrency":"USD","price":"8.00","priceSpecification":{{"@type":"UnitPriceSpecification","price":"8.00","priceCurrency":"USD","unitText":"per gift, starting at"}}}}}}</script>'''
+CORP_OFFER = P(',"offers":{"@type":"Offer","priceCurrency":"USD","price":"8.00","priceSpecification":{"@type":"UnitPriceSpecification","price":"8.00","priceCurrency":"USD","unitText":"per gift, starting at"}}')
+corp_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Service","serviceType":"Corporate gift wrapping","name":"Corporate Gift Wrapping Service","provider":{{"@id":"{SITE}/#business"}},"areaServed":[{",".join(f'{{"@type":"City","name":"{c}"}}' for c in AREA)}],"description":"Bulk gift wrapping for corporate holiday parties, client gifts and employee appreciation with brand-color ribbon, logo gift tags, pickup and delivery across East Tennessee."{CORP_OFFER}}}</script>'''
+CORP_PRICING = f'''<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Corporate packages</span><h2>Volume pricing that gets better as the order grows</h2><p>Corporate rates are for Classic wraps in your colors. Themed or custom builds are quoted separately. Final per-gift price depends on sizes and finishes.</p></div>
+    <div class="pricing">
+      <div class="plan reveal"><span class="name">Starter</span><h3>Team gifts</h3><p class="who">25 – 99 gifts · small offices, departments, client lists</p><div class="price">from $9<small>/gift</small></div><p class="per">10% off à la carte pricing</p>
+        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Pickup &amp; delivery from $50 round trip</li><li>Turnaround date confirmed with your quote</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
+      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Team</span><h3>Holiday party</h3><p class="who">100 – 249 gifts · company parties, client appreciation events</p><div class="price">from $8<small>/gift</small></div><p class="per">20% off à la carte pricing</p>
+        <ul><li>Up to two wrap styles (for example, staff and VIP)</li><li>Custom logo gift tags included</li><li>Brand-color ribbon sourced to match</li><li>Pickup &amp; delivery to Knoxville or Chattanooga, quoted by trip</li><li>Delivery straight to the venue on party day</li></ul><a class="btn btn-primary" href="contact.html?type=corporate">Quote the Team package</a></div>
+      <div class="plan reveal"><span class="name">Enterprise</span><h3>Large &amp; multi-site</h3><p class="who">250+ gifts · multiple offices, franchise groups, hospital systems</p><div class="price">Custom<small> quote</small></div><p class="per">25%+ volume savings</p>
+        <ul><li>Dedicated production timeline &amp; check-ins</li><li>Multi-location delivery scheduling</li><li>Mixed sizes and odd shapes handled in the same order</li><li>Invoicing for business accounts</li></ul><a class="btn btn-gold" href="contact.html?type=corporate">Talk to us about Enterprise</a></div>
+    </div>
+    <p class="fineprint">Prices are starting points for small and medium gifts. Large and oversized items are quoted individually. Rush orders under 72 hours add 25%. Tennessee sales tax applies where required.</p>
+  </div>
+</section>'''
+CORP_QUOTE = f'''<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Corporate quotes</span><h2>Volume pricing, quoted for your order</h2><p>Corporate orders are priced by the gift, with the rate improving as the order grows. Send your gift count, rough sizes and event date and you will have a written quote with a turnaround date within one business day.</p></div>
+    <div class="grid grid-3">
+      <div class="card reveal"><div class="icon">{ICONS['building']}</div><h3>Team gifts</h3><p>25 to 99 gifts. One signature wrap style in your colors, printed tags with names from your list.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['gift']}</div><h3>Holiday party</h3><p>100 to 249 gifts. Up to two wrap styles, custom logo tags, brand-color ribbon, delivery straight to the venue.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['star']}</div><h3>Large &amp; multi-site</h3><p>250 or more. Dedicated timeline, multi-location delivery, invoicing for business accounts.</p></div>
+    </div>
+    <p style="text-align:center;margin-top:26px"><a class="btn btn-primary btn-lg" href="contact.html?type=corporate">Request a corporate quote</a></p>
+  </div>
+</section>'''
 corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for holiday parties, client gifts &amp; employee appreciation",
   "Hundreds of gifts, one consistent presentation, delivered on your date. Serving offices, medical practices, dealerships, law firms, churches and schools from Knoxville to Chattanooga.", "For businesses") + f'''
 <section>
@@ -452,27 +535,14 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
   <div class="wrap banner-text reveal"><span class="kicker">Volume orders</span><h2>Dozens of gifts, one cohesive look</h2><p>Coordinated papers, ribbons and tags across an entire order, delivered sorted and ready to hand out.</p></div>
 </section>
 
-<section class="alt">
-  <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Corporate packages</span><h2>Volume pricing that gets better as the order grows</h2><p>Corporate rates are for Classic wraps in your colors. Themed or custom builds are quoted separately. Final per-gift price depends on sizes and finishes.</p></div>
-    <div class="pricing">
-      <div class="plan reveal"><span class="name">Starter</span><h3>Team gifts</h3><p class="who">25 – 99 gifts · small offices, departments, client lists</p><div class="price">from $9<small>/gift</small></div><p class="per">10% off à la carte pricing</p>
-        <ul><li>One signature wrap style in your colors</li><li>Printed gift tags, names added from your list</li><li>Pickup &amp; delivery from $50 round trip</li><li>Turnaround date confirmed with your quote</li></ul><a class="btn btn-secondary" href="contact.html?type=corporate">Quote the Starter package</a></div>
-      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Team</span><h3>Holiday party</h3><p class="who">100 – 249 gifts · company parties, client appreciation events</p><div class="price">from $8<small>/gift</small></div><p class="per">20% off à la carte pricing</p>
-        <ul><li>Up to two wrap styles (for example, staff and VIP)</li><li>Custom logo gift tags included</li><li>Brand-color ribbon sourced to match</li><li>Pickup &amp; delivery to Knoxville or Chattanooga, quoted by trip</li><li>Delivery straight to the venue on party day</li></ul><a class="btn btn-primary" href="contact.html?type=corporate">Quote the Team package</a></div>
-      <div class="plan reveal"><span class="name">Enterprise</span><h3>Large &amp; multi-site</h3><p class="who">250+ gifts · multiple offices, franchise groups, hospital systems</p><div class="price">Custom<small> quote</small></div><p class="per">25%+ volume savings</p>
-        <ul><li>Dedicated production timeline &amp; check-ins</li><li>Multi-location delivery scheduling</li><li>Mixed sizes and odd shapes handled in the same order</li><li>Invoicing for business accounts</li></ul><a class="btn btn-gold" href="contact.html?type=corporate">Talk to us about Enterprise</a></div>
-    </div>
-    <p class="fineprint">Prices are starting points for small and medium gifts. Large and oversized items are quoted individually. Rush orders under 72 hours add 25%. Tennessee sales tax applies where required.</p>
-  </div>
-</section>
+{CORP_PRICING if SHOW_PRICING else CORP_QUOTE}
 
 <section>
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Enhancements</span><h2>Finishing touches for corporate orders</h2></div>
     <div class="grid grid-3">
-      <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Logo gift tags</h3><p>Your logo and a message on a heavy card-stock tag, tied on with ribbon. From $1.50 per gift.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['heart']}</div><h3>Handwritten notes</h3><p>Personal notes handwritten from your message list, so each recipient gets something that feels one-to-one. $2 per gift.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['tag']}</div><h3>Logo gift tags</h3><p>Your logo and a message on a heavy card-stock tag, tied on with ribbon.{P(" From $1.50 per gift.")}</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['heart']}</div><h3>Handwritten notes</h3><p>Personal notes handwritten from your message list, so each recipient gets something that feels one-to-one.{P(" $2 per gift.")}</p></div>
       <div class="card reveal"><div class="icon">{ICONS['gift']}</div><h3>White elephant &amp; party gifts</h3><p>Send everything for the office party or white elephant exchange and it all comes back wrapped, so the surprise is real for everyone, including the person who organized it.</p></div>
     </div>
   </div>
@@ -503,7 +573,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
 pages.append(dict(slug="corporate-gift-wrapping.html", crumb="Corporate gift wrapping",
   title="Corporate Gift Wrapping | Knoxville & Chattanooga TN",
   og_title="Corporate Gift Wrapping — Bulk Holiday & Client Gifts, East Tennessee",
-  desc="Bulk gift wrapping for holiday parties, client gifts and employee appreciation. Brand-color ribbon, logo tags, volume pricing from $8 per gift, pickup and delivery in East TN.",
+  desc="Bulk gift wrapping for holiday parties, client gifts and employee appreciation. Brand-color ribbon, logo tags, " + ("volume pricing from $8 per gift, " if SHOW_PRICING else "free written quotes, ") + "pickup and delivery in East TN.",
   ld=corp_ld, body=corp_body))
 
 # SERVICES / OCCASIONS
@@ -675,6 +745,23 @@ pages.append(dict(slug="pricing.html", crumb="Pricing",
   ld=pricing_ld, body=pricing_body))
 
 # HOLIDAY
+HOL_PRICING = f'''<section>
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Holiday pricing</span><h2>Pick your group size and consider it done</h2><p>Classic wrapping with paper, ribbon, bows and tags included. Themed and custom builds are quoted by the gift.</p></div>
+    <div class="pricing">
+      <div class="plan reveal"><span class="name">Small group</span><h3>1 – 10 gifts</h3><p class="who">One person's list or the special few</p><div class="price">$75</div><p class="per">all materials included</p><ul><li>One coordinated palette</li><li>Tags with names</li><li>Drop-off in Sweetwater</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book now</a></div>
+      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Medium group</span><h3>11 – 25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$150</div><p class="per">all materials included</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
+      <div class="plan reveal"><span class="name">Large group</span><h3>26 – 50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$250</div><p class="per">51+ gifts from $4.50 each</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
+    </div>
+    <p class="fineprint">Standard-size gifts (up to about 18 × 14 × 8 in). Large gifts add $10 each, oversized or odd shapes $20. No-bows and pre-boxed discounts apply; repeat clients who bring back last year's boxes save another $10. <a href="pricing.html">Full price list →</a></p>
+  </div>
+</section>'''
+HOL_QUOTE = f'''<section>
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">Holiday quotes</span><h2>Tell us about your list, we'll send a free quote</h2><p>Family orders are priced by the number of gifts, with paper, ribbon, bows and tags included. Send a rough count and when you need them back; the quote is free and comes within one business day.</p></div>
+    <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="contact.html?type=family">Get a free holiday quote</a><a class="btn btn-secondary btn-lg" href="sms:{PHONE_TEL}">Text {PHONE}</a></div>
+  </div>
+</section>'''
 holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift wrapping for busy families",
   "Drop off the shopping bags and collect a tree's worth of beautifully wrapped, tagged and sorted gifts. Serving Sweetwater, Knoxville, Chattanooga and the communities along I-75.", "Holiday 2026") + f'''
 <section>
@@ -708,25 +795,14 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
     <div class="reveal">
       <div class="stats">
         <div class="stat"><b>6+</b><span>hours the average family spends wrapping</span></div>
-        <div class="stat"><b>$150</b><span>for 11 to 25 gifts, materials included</span></div>
-        <div class="stat"><b>$0</b><span>to drop off in Sweetwater</span></div>
+        {'<div class="stat"><b>$150</b><span>for 11 to 25 gifts, materials included</span></div><div class="stat"><b>$0</b><span>to drop off in Sweetwater</span></div>' if SHOW_PRICING else '<div class="stat"><b>1</b><span>paper per person, or one matching look</span></div><div class="stat"><b>Free</b><span>drop-off in Sweetwater and free quotes</span></div>'}
       </div>
-      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. No boxes on the porch for curious kids, and no pickup charge. Receiving is a flat $15 per wrapping order, however many packages arrive.</p></div>
+      <div class="callout"><span class="h">Ship your online orders to us</span><p>Have Amazon and retailer orders delivered straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. No boxes on the porch for curious kids, and no pickup charge.{P(" Receiving is a flat $15 per wrapping order, however many packages arrive.")}</p></div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Holiday pricing</span><h2>Pick your group size and consider it done</h2><p>Classic wrapping with paper, ribbon, bows and tags included. Themed and custom builds are quoted by the gift.</p></div>
-    <div class="pricing">
-      <div class="plan reveal"><span class="name">Small group</span><h3>1 – 10 gifts</h3><p class="who">One person's list or the special few</p><div class="price">$75</div><p class="per">all materials included</p><ul><li>One coordinated palette</li><li>Tags with names</li><li>Drop-off in Sweetwater</li></ul><a class="btn btn-secondary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan featured reveal"><span class="flag">Most popular</span><span class="name">Medium group</span><h3>11 – 25 gifts</h3><p class="who">The whole family plus teachers and grandparents</p><div class="price">$150</div><p class="per">all materials included</p><ul><li>Santa paper + family paper</li><li>Handwritten tags</li><li>Sorted by recipient</li></ul><a class="btn btn-primary" href="contact.html?type=family">Book now</a></div>
-      <div class="plan reveal"><span class="name">Large group</span><h3>26 – 50 gifts</h3><p class="who">Large households and the home everyone gathers in</p><div class="price">$250</div><p class="per">51+ gifts from $4.50 each</p><ul><li>Up to three palettes</li><li>Tags and note cards</li><li>Two pickups if you shop in rounds</li></ul><a class="btn btn-gold" href="contact.html?type=family">Book now</a></div>
-    </div>
-    <p class="fineprint">Standard-size gifts (up to about 18 × 14 × 8 in). Large gifts add $10 each, oversized or odd shapes $20. No-bows and pre-boxed discounts apply; repeat clients who bring back last year's boxes save another $10. <a href="pricing.html">Full price list →</a></p>
-  </div>
-</section>
+{HOL_PRICING if SHOW_PRICING else HOL_QUOTE}
 
 <section class="alt">
   <div class="wrap">
@@ -772,7 +848,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
 pages.append(dict(slug="holiday-gift-wrapping.html", crumb="Holiday gift wrapping",
   title="Christmas Gift Wrapping Service | Sweetwater, Knoxville & Chattanooga",
   og_title="Christmas & Holiday Gift Wrapping Service — East Tennessee",
-  desc="Holiday gift wrapping for busy families in Sweetwater, Knoxville and Chattanooga, TN. From $75 for up to 10 gifts, materials included, Santa paper kept separate, pickup and delivery. Book early.",
+  desc="Holiday gift wrapping for busy families in Sweetwater, Knoxville and Chattanooga, TN. " + ("From $75 for up to 10 gifts, materials included, " if SHOW_PRICING else "Free quotes, materials included, ") + "Santa paper kept separate, pickup and delivery. Book early.",
   body=holiday_body))
 
 # ABOUT
@@ -800,11 +876,11 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
 
 <section class="alt" id="service-area">
   <div class="wrap">
-    <div class="section-head reveal"><span class="kicker">Service area</span><h2>Sweetwater home base, Knoxville to Chattanooga by appointment</h2><p>Drop-off in {CITY} is always free. Pickup and delivery is from $50 round trip beyond 5 miles of {CITY}, and quoted by distance for the wider corridor.</p></div>
+    <div class="section-head reveal"><span class="kicker">Service area</span><h2>Sweetwater home base, Knoxville to Chattanooga by appointment</h2><p>Drop-off in {CITY} is always free.{P(" Pickup and delivery is from $50 round trip beyond 5 miles of " + CITY + ", and quoted by distance for the wider corridor.") or " Pickup and delivery is quoted by distance and included in your written quote."}</p></div>
     <div class="grid grid-3">
       <div class="card reveal"><div class="icon">{ICONS['pin']}</div><h3>Home base</h3><p>Sweetwater, Madisonville, Athens, Loudon, Niota, Philadelphia, Vonore, Tellico Village and Lenoir City.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>North to Knoxville</h3><p>Maryville, Alcoa, Farragut, Oak Ridge, West Knoxville and downtown Knoxville. Pickup and delivery quoted by distance, from $50 round trip.</p></div>
-      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>South to Chattanooga</h3><p>Cleveland, Ooltewah, Hixson, East Ridge and downtown Chattanooga. Pickup and delivery quoted by distance, from $50 round trip.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>North to Knoxville</h3><p>Maryville, Alcoa, Farragut, Oak Ridge, West Knoxville and downtown Knoxville. Pickup and delivery quoted by distance{P(", from $50 round trip")}.</p></div>
+      <div class="card reveal"><div class="icon">{ICONS['truck']}</div><h3>South to Chattanooga</h3><p>Cleveland, Ooltewah, Hixson, East Ridge and downtown Chattanooga. Pickup and delivery quoted by distance{P(", from $50 round trip")}.</p></div>
     </div>
     <p class="fineprint" style="text-align:center">Outside these areas? Please ask. Larger corporate orders often justify the distance.</p>
   </div>
@@ -833,13 +909,13 @@ pages.append(dict(slug="about.html", crumb="About",
 
 # FAQ
 faqs = [
- ("How much does professional gift wrapping cost?", "Classic wrapping is priced by the group with all materials included: $75 for 1 to 10 gifts, $150 for 11 to 25, $250 for 26 to 50, and from $4.50 a gift for 51 or more. One gift is welcome; the group price still applies. Large gifts add $10 each and oversized or odd shapes add $20. Gift cards count as gifts in the group. Signature custom wraps, the themed and hand-built ones, start at $18 per gift and are quoted individually because the materials and time are more. Corporate volume pricing starts at $8 per gift for 100 or more."),
- ("Do you offer pickup and delivery?", "Yes. Drop-off in Sweetwater is free. Pickup and delivery beyond 5 miles is $50 round trip, and Knoxville, Maryville, Cleveland and Chattanooga are quoted by distance."),
+ ("How much does professional gift wrapping cost?", "Classic wrapping is priced by the group with all materials included: $75 for 1 to 10 gifts, $150 for 11 to 25, $250 for 26 to 50, and from $4.50 a gift for 51 or more. One gift is welcome; the group price still applies. Large gifts add $10 each and oversized or odd shapes add $20. Gift cards count as gifts in the group. Signature custom wraps, the themed and hand-built ones, start at $18 per gift and are quoted individually because the materials and time are more. Corporate volume pricing starts at $8 per gift for 100 or more." if SHOW_PRICING else "Every quote is free and tailored to the order. Classic wrapping is priced by the number of gifts with paper, ribbon, bows and tags included, so a whole family's Christmas is one simple figure. Signature themed and custom wraps are quoted by the gift, and corporate orders get volume rates that improve as the order grows. Send a rough gift count through the quote form, or text a photo of the pile, and you will have a written quote within one business day."),
+ ("Do you offer pickup and delivery?", "Yes. Drop-off in Sweetwater is free. Pickup and delivery beyond 5 miles is $50 round trip, and Knoxville, Maryville, Cleveland and Chattanooga are quoted by distance." if SHOW_PRICING else 'Yes. Drop-off in Sweetwater is free. Pickup and delivery is quoted by distance for Knoxville, Maryville, Cleveland, Chattanooga and everywhere along I-75, and the cost is included in your written quote.'),
  ("How far in advance should I book holiday wrapping?", "Holiday scheduling is open now, and the sooner you book, the better. Slots are held in the order deposits come in, and once they are full, dates and turnaround times cannot be guaranteed. Rush orders under 72 hours may be available for a 25% surcharge."),
  ("Can you match my company's brand colors?", "Absolutely. Send your logo and brand colors and we'll source ribbon to match and print custom logo gift tags. Corporate orders receive a photo mock-up for approval before the batch is wrapped."),
- ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is a flat $15 per wrapping order, however many packages or stores they come from, since every package is tracked and accounted for. Ask for the shipping address when you book."),
- ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. Standard gifts fit in a box up to about 18 by 14 by 8 inches. Large gifts, up to about 24 by 18 by 14, add $10 each; anything bigger or without flat sides adds $20. Bigger than that, send a photo for a quote."),
- ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and repeat clients who bring back last year's gift boxes get another $10 off."),
+ ("Can I ship online orders directly to you?", "Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup charge. Receiving and check-in is a flat $15 per wrapping order, however many packages or stores they come from, since every package is tracked and accounted for. Ask for the shipping address when you book." if SHOW_PRICING else 'Yes. Have Amazon or retailer orders shipped straight to Amiebeth in Sweetwater. Each package is logged when it arrives, checked against your list, wrapped and delivered finished. It keeps surprises off your porch and saves you the pickup trip. There is a small flat receiving fee per order, however many packages arrive; ask for the shipping address when you book.'),
+ ("What if my gift is an odd shape?", "Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. Standard gifts fit in a box up to about 18 by 14 by 8 inches. Large gifts, up to about 24 by 18 by 14, add $10 each; anything bigger or without flat sides adds $20. Bigger than that, send a photo for a quote." if SHOW_PRICING else 'Bikes, baskets, guitars, plush animals, bottles and other awkward shapes are welcome. Standard gifts fit in a box up to about 18 by 14 by 8 inches; larger and oversized items are quoted individually. Send a photo and we will include it in your quote.'),
+ ("Can I supply my own wrapping paper and ribbon?", "Yes. Mention it when you book and we will price it in. There are also three standing discounts: just wrapping with no bows is $15 off, gifts that arrive already boxed are $10 off, and repeat clients who bring back last year's gift boxes get another $10 off." if SHOW_PRICING else "Yes. Mention it when you book and we will price it in. Gifts that arrive already boxed, and orders that want wrapping only with no bows, are also quoted lower, and repeat clients who bring back last year's gift boxes save again."),
  ("Can each family member have their own wrapping paper?", "Yes, and it is a favorite. Give each person their own paper and there is no squinting at tags on Christmas morning; everyone knows whose is whose at a glance, and the papers are chosen to complement each other so the tree still looks put together. Or wrap everything in one matching look with name tags. Either way, tell us who gets what when you book."),
  ("How do you keep Santa gifts separate?", "Tell us which gifts are from Santa and we'll wrap them in a distinct paper, tag them separately and return them in their own labeled bag so nothing gets mixed up on Christmas Eve."),
  ("Can you wrap the gifts for an office party or white elephant?", "Yes, and it is one of our favorite jobs. Send every gift, in a bag with a note of who it is from if you like, and it all comes back wrapped so the surprise is real for everyone, including whoever organized it. We can wrap in one coordinated style or make every gift look different."),
@@ -868,10 +944,7 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
 <section>
   <div class="wrap contact-grid">
     <form class="form-card reveal" data-contact data-mailto-to="{FORM_EMAIL}" action="{FORM_ACTION}" method="POST">
-      <input type="hidden" name="_subject" value="New gift wrapping quote request">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_next" value="{SITE}/thank-you.html">
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+      {FORM_HIDDEN}
       <div class="form-row">
         <div class="field"><label for="c-name">Your name *</label><input id="c-name" name="name" required autocomplete="name"></div>
         <div class="field"><label for="c-company">Company (if corporate)</label><input id="c-company" name="company" autocomplete="organization"></div>
@@ -917,7 +990,7 @@ pages.append(dict(slug="contact.html", crumb="Contact",
 pages.append(dict(slug="thank-you.html", crumb="Thank you", noindex=True,
   title="Thanks! Your quote request is in | All Wrapped Up",
   desc="Your gift wrapping quote request has been received.",
-  body=page_head("Thank you", "Your request has been received", f"We will reply within one business day with pricing and next steps. For anything urgent, text {PHONE}.", "Thank you") + f'''
+  body=page_head("Thank you", "Your request has been received", f"We will reply within one business day with your free quote and next steps. For anything urgent, text {PHONE}.", "Thank you") + f'''
 <section><div class="wrap" style="text-align:center"><div class="gift-tile reveal in" style="background:#fde4ee;width:220px;margin:0 auto 24px">{gift_svg("#fff","#e5648f","#fff","#b23a5e","#fde4ee")}</div>
 <a class="btn btn-primary" href="index.html">Back to the home page</a></div></section>'''))
 
@@ -926,7 +999,7 @@ pages.append(dict(slug="404.html", crumb="Not found", noindex=True,
   title="Page not found | All Wrapped Up",
   desc="That page seems to have gone missing under the tree.",
   body=page_head("Not found", "That page could not be found", "The link may be out of date or mistyped. Here is the way back.", "404") + '''
-<section><div class="wrap" style="text-align:center"><div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="index.html">Home</a><a class="btn btn-secondary" href="pricing.html">Pricing</a><a class="btn btn-secondary" href="contact.html">Get a quote</a></div></div></section>'''))
+<section><div class="wrap" style="text-align:center"><div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="index.html">Home</a>''' + P('<a class="btn btn-secondary" href="pricing.html">Pricing</a>') + '''<a class="btn btn-secondary" href="contact.html">Get a quote</a></div></div></section>'''))
 
 # ---------- write ----------
 PAGE_SLUGS = [p["slug"] for p in pages]
@@ -949,6 +1022,12 @@ def clean_links(html):
         html = html.replace(f"{SITE}/{slug}", f"{SITE}/{slug[:-5]}/")
     return html
 
+if not SHOW_PRICING:
+    import shutil
+    pages = [p for p in pages if p["slug"] != "pricing.html"]
+    shutil.rmtree(ROOT / "pricing", ignore_errors=True)
+    (ROOT / "pricing.html").unlink(missing_ok=True)
+
 for p in pages:
     out = clean_links(layout(p))
     if p["slug"] in ("index.html", "404.html"):
@@ -960,7 +1039,7 @@ for p in pages:
         (ROOT / p["slug"]).write_text(f'<!doctype html><meta charset="utf-8"><title>{esc(p["title"])}</title><link rel="canonical" href="{SITE}/{p["slug"][:-5]}/"><meta http-equiv="refresh" content="0; url=/{p["slug"][:-5]}/"><meta name="robots" content="noindex"><a href="/{p["slug"][:-5]}/">Continue</a>', encoding="utf-8")
     print("wrote", p["slug"])
 
-prio = {"index.html": "1.0", "corporate-gift-wrapping.html": "0.9", "holiday-gift-wrapping.html": "0.9", "pricing.html": "0.9", "services.html": "0.8", "contact.html": "0.8", "about.html": "0.6", "faq.html": "0.7"}
+prio = {"index.html": "1.0", "corporate-gift-wrapping.html": "0.9", "holiday-gift-wrapping.html": "0.9", **({"pricing.html": "0.9"} if SHOW_PRICING else {}), "services.html": "0.8", "contact.html": "0.8", "about.html": "0.6", "faq.html": "0.7"}
 urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n" for s, pr in prio.items())
 (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
 (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you/\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
