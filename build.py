@@ -27,7 +27,7 @@ FORM_EMAIL = "team@norcaladmin.com"
 # Preferred: a Google Apps Script web-app URL (see form-handler/Code.gs). Submissions are logged
 # to a Google Sheet and emailed to Amiebeth with nothing for anyone to click or activate.
 # Leave empty to fall back to FormSubmit (which needs one activation click at FORM_EMAIL).
-FORM_ENDPOINT = ""
+FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwl8oUdNhC_7sW0i-zc_SbBjhd7IFMYxk93-l0T-WqqhZVqucoL-ILR0h_l1IDJn0k/exec"
 FORM_ACTION = FORM_ENDPOINT or f"https://formsubmit.co/{FORM_EMAIL}"
 # Copies of every quote request also go here (no activation needed for CC addresses).
 FORM_CC = ""   # no CC: a CC address is visible in the page source. Forward leads from the FORM_EMAIL inbox instead.
