@@ -4,7 +4,9 @@
  * What it does on every form submission:
  *   1. Appends a row to the sheet this script is attached to (creates the header row if empty).
  *   2. Emails the lead to NOTIFY_TO (Amiebeth) from the Google account that deployed the script,
- *      with Reply-To set to the lead's own email so she can reply directly.
+ *      with an "Email [Name]" button that starts a clean new message to the lead (nothing quoted).
+ *      Reply-To is also set to the lead's email, but a plain Reply quotes this email back to them,
+ *      so the body carries only the lead's own answers, no internal notes.
  *   3. Nothing to click, ever. No activation, no forwarding confirmation.
  *
  * Setup (once, in the team@norcaladmin.com Google account):
@@ -59,15 +61,23 @@ function doPost(e) {
       var v = typeof c[1] === 'function' ? '' : (p[c[1]] || '');
       return v ? '<tr><td style="padding:6px 12px 6px 0;color:#857a7d;white-space:nowrap;vertical-align:top">' + c[0] + '</td><td style="padding:6px 0">' + esc(v).replace(/\n/g, '<br>') + '</td></tr>' : '';
     }).join('');
+    var validEmail = p.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email);
+    // The button starts a blank new message to the lead, so nothing from this email is quoted back to them.
+    var button = '';
+    if (validEmail) {
+      var mailto = 'mailto:' + encodeURIComponent(p.email).replace(/%40/g, '@') +
+        '?subject=' + encodeURIComponent('Your gift wrapping quote - All Wrapped Up') +
+        '&body=' + encodeURIComponent('Hi ' + (who !== 'Someone' ? who.split(' ')[0] : 'there') + ',\n\n');
+      button = '<p style="margin:20px 0 0"><a href="' + esc(mailto) + '" style="display:inline-block;background:#221b1d;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:6px;font-weight:bold">Email ' + esc(who !== 'Someone' ? who : 'this lead') + '</a></p>';
+    }
+    // Keep internal notes out of this body: a plain Reply quotes all of it to the lead.
     var html = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#221b1d;max-width:620px">' +
       '<p style="font-size:18px;margin:0 0 14px"><b>New Gift Wrapping Website Lead Inquiry Received</b></p>' +
-      '<table style="border-collapse:collapse">' + lines + '</table>' +
-      '<p style="margin:18px 0 0">Reply to this email to answer ' + esc(who) + ' directly' + (p.preferred_contact ? ' (they prefer ' + esc(p.preferred_contact).toLowerCase() + ')' : '') + '.</p>' +
-      '<p style="color:#857a7d;font-size:13px;margin-top:22px">Sent automatically by the quote form at ' + SITE + '. Every lead is also logged in the "All Wrapped Up Leads" Google Sheet.</p></div>';
+      '<table style="border-collapse:collapse">' + lines + '</table>' + button + '</div>';
     var opts = { htmlBody: html, name: 'All Wrapped Up website' };
-    if (p.email && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) opts.replyTo = p.email;
+    if (validEmail) opts.replyTo = p.email;
     if (CC) opts.cc = CC;
-    MailApp.sendEmail(NOTIFY_TO, subject, 'New lead from ' + SITE + '. Open in an HTML email client to see the details.', opts);
+    MailApp.sendEmail(NOTIFY_TO, subject, 'New website lead. Open in an HTML email client to see the details.', opts);
   } catch (err) {
     try { MailApp.sendEmail(CC || NOTIFY_TO, 'Quote form error', String(err) + '\n\n' + JSON.stringify((e && e.parameter) || {})); } catch (ignore) {}
   }
