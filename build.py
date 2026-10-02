@@ -932,7 +932,7 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
 
 {cta_band("Let's talk about your gifts", "One anniversary gift or a thousand client boxes, I would be glad to hear about it.")}
 '''
-about_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"{OWNER_PUBLIC}","jobTitle":"Owner & gift wrapper","worksFor":{{"@id":"{SITE}/#business"}},"email":"{EMAIL}","telephone":"{PHONE_TEL}","address":{{"@type":"PostalAddress","addressLocality":"{CITY}","addressRegion":"{REGION}","addressCountry":"US"}}}}</script>'''
+about_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"{OWNER_PUBLIC}","jobTitle":"Owner & gift wrapper","worksFor":{{"@id":"{SITE}/#business"}},"address":{{"@type":"PostalAddress","addressLocality":"{CITY}","addressRegion":"{REGION}","addressCountry":"US"}}}}</script>'''
 pages.append(dict(slug="about.html", crumb="About",
   title=f"About {OWNER_PUBLIC} | {BIZ}, Sweetwater TN",
   og_title=f"About {BIZ} — Home-Based Gift Wrapping in Sweetwater, TN",
