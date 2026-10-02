@@ -115,6 +115,16 @@ ICONS = {
 def esc(s): return html.escape(s, quote=True)
 
 # ---------- layout ----------
+def webpage_ld(page, url):
+    import json
+    site = {"@context": "https://schema.org", "@type": "WebSite", "@id": SITE + "/#website", "url": SITE + "/", "name": BIZ + " — " + TAG,
+            "description": "Professional gift wrapping service in Sweetwater, Tennessee serving Knoxville to Chattanooga.", "publisher": {"@id": SITE + "/#business"}, "inLanguage": "en-US"}
+    wp = {"@context": "https://schema.org", "@type": "WebPage", "@id": url + "#webpage", "url": url, "name": page["title"], "description": page["desc"],
+          "isPartOf": {"@id": SITE + "/#website"}, "about": {"@id": SITE + "/#business"}, "inLanguage": "en-US", "dateModified": TODAY,
+          "primaryImageOfPage": {"@type": "ImageObject", "url": SITE + "/assets/og-image.jpg"}}
+    if page.get("city"): wp["spatialCoverage"] = {"@type": "City", "name": page["city"] + ", Tennessee"}
+    return '<script type="application/ld+json">' + json.dumps(site, ensure_ascii=False) + '</script>\n<script type="application/ld+json">' + json.dumps(wp, ensure_ascii=False) + '</script>'
+
 def pixel(page):
     if not META_PIXEL_ID: return ""
     lead = "fbq('track','Lead');" if page["slug"] == "thank-you.html" else ""
@@ -145,7 +155,7 @@ def layout(page):
 {noindex}
 <link rel="canonical" href="{url}">
 <meta name="theme-color" content="#b23a5e">
-<meta name="geo.region" content="US-TN"><meta name="geo.placename" content="{CITY}, Tennessee">
+<meta name="geo.region" content="US-TN"><meta name="geo.placename" content="{CITY}, Tennessee"><meta name="geo.position" content="35.6017;-84.4613"><meta name="ICBM" content="35.6017, -84.4613">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
@@ -167,6 +177,7 @@ def layout(page):
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="assets/style.css?v={ASSET_V}">
 {pixel(page)}
+{webpage_ld(page, url)}
 {LOCAL_BUSINESS_LD}
 {crumbs_ld}
 {extra_ld}
@@ -210,6 +221,7 @@ def layout(page):
         <li>Knoxville · Chattanooga</li>
       </ul></div>
     </div>
+    <p class="footer-areas"><strong>Gift wrapping near you:</strong> {" · ".join(f'<a href="{c["slug"]}">{c["city"]}</a>' for c in CITIES)} · <a href="about.html#service-area">Sweetwater &amp; all of East Tennessee</a></p>
     <div class="footer-bottom">
       <span>© <span data-year>2026</span> {BIZ} — {TAG}. {OWNER}, {CITY}, Tennessee.</span>
       <span>Home-based in Sweetwater · By appointment · Pickup &amp; delivery available</span>
@@ -249,7 +261,7 @@ LOCAL_BUSINESS_LD = f'''<script type="application/ld+json">
       {{"@type": "Offer", "itemOffered": {{"@type": "Service", "name": "Wedding, shower and event gift wrapping", "url": "{SITE}/services.html"}}}}
     ]
   }},
-  "sameAs": []
+  "sameAs": ["https://www.facebook.com/share/1csNh6WQRY/"]
 }}
 </script>'''
 
@@ -391,6 +403,19 @@ home_body = f'''
         <a class="btn" href="holiday-gift-wrapping.html">Family packages →</a>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="at-a-glance">
+  <div class="wrap">
+    <div class="section-head left reveal"><span class="kicker">At a glance</span><h2>Gift wrapping service in Sweetwater, Tennessee</h2></div>
+    <dl class="facts reveal">
+      <div><dt>What we do</dt><dd>{BIZ} is a professional gift wrapping service. We wrap gifts by hand for businesses and families: corporate holiday gifts, client and employee appreciation gifts, Christmas and Hanukkah gifts, wedding, bridal shower, baby shower, birthday and anniversary gifts.</dd></div>
+      <div><dt>Where</dt><dd>Based in {CITY}, Tennessee, on I-75 between Knoxville and Chattanooga. Drop-off in {CITY} by appointment. Pickup and delivery across East Tennessee including Knoxville, Farragut, Maryville, Lenoir City, Loudon, Athens, Madisonville, Cleveland, Ooltewah and Chattanooga.</dd></div>
+      <div><dt>Who it's for</dt><dd>Offices, medical and dental practices, law firms, dealerships, real estate teams, banks, churches and schools that need dozens or hundreds of gifts wrapped consistently, and families who would rather spend December with their people than with the tape dispenser.</dd></div>
+      <div><dt>What's included</dt><dd>Premium paper, real ribbon, a hand-tied bow and a gift tag on every gift. Themed and custom builds, logo gift tags, handwritten notes, Santa paper kept separate, gifts returned sorted by recipient, and online orders can ship straight to us.</dd></div>
+      <div><dt>How to book</dt><dd>Request a free quote through the form on this page, or call or text <a href="tel:{PHONE_TEL}">{PHONE}</a>. Quotes are returned within one business day. Owner-operated by {OWNER}.</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -1022,6 +1047,86 @@ def clean_links(html):
         html = html.replace(f"{SITE}/{slug}", f"{SITE}/{slug[:-5]}/")
     return html
 
+# ---------- city landing pages ----------
+CITIES = [
+ dict(city="Knoxville", slug="gift-wrapping-knoxville-tn.html", drive="about 45 minutes up I-75", county="Knox County",
+      areas="downtown Knoxville, West Knoxville, Bearden, Farragut, Hardin Valley, Fountain City, Powell and the University of Tennessee area",
+      corp="Knoxville's law firms, medical practices, banks, engineering offices and the companies around Cedar Bluff and Pellissippi Parkway are the orders we see most. We collect from your office, wrap in Sweetwater and deliver to the office or straight to the party venue.",
+      fam="For Knoxville families, pickup is scheduled around your week, evenings and weekends included, and gifts come back sorted by recipient with Santa paper kept separate."),
+ dict(city="Chattanooga", slug="gift-wrapping-chattanooga-tn.html", drive="about an hour down I-75", county="Hamilton County",
+      areas="downtown Chattanooga, the North Shore, Hixson, East Brainerd, Ooltewah, Collegedale, East Ridge and Signal Mountain",
+      corp="Chattanooga offices, healthcare groups, logistics companies and the firms around Hamilton Place and the downtown core book coordinated holiday and client gifts. One pickup, one consistent look, delivered to your office or venue on the date you choose.",
+      fam="Chattanooga families use us for the whole Christmas list in one drop: pickup from your home, every gift wrapped, tagged and returned ready for the tree."),
+ dict(city="Maryville", slug="gift-wrapping-maryville-tn.html", drive="about 40 minutes", county="Blount County",
+      areas="Maryville, Alcoa, Louisville, Friendsville, Townsend and the Foothills Mall area",
+      corp="Blount County employers, from manufacturers near the airport to downtown Maryville practices and Alcoa offices, order employee appreciation and client gifts wrapped in company colors with logo tags.",
+      fam="Maryville and Alcoa families get the same service as Sweetwater locals: pickup and delivery around your schedule, gifts sorted by person, teacher and coach gifts included."),
+ dict(city="Cleveland", slug="gift-wrapping-cleveland-tn.html", drive="about 40 minutes", county="Bradley County",
+      areas="Cleveland, McDonald, Charleston, Ooltewah and the Bradley County corridor along I-75 and APD-40",
+      corp="Cleveland manufacturers, churches, schools and professional offices book holiday party gifts, teacher appreciation and client gifts, collected from your location and delivered back wrapped and labeled.",
+      fam="For Cleveland families, drop-off in Sweetwater is a short drive, or we pick up from home. Every gift comes back wrapped, tagged and sorted."),
+ dict(city="Athens", slug="gift-wrapping-athens-tn.html", drive="about 15 minutes", county="McMinn County",
+      areas="Athens, Etowah, Englewood, Riceville, Niota and Tennessee Wesleyan University",
+      corp="Athens is close enough that pickup and delivery is quick and easy for McMinn County businesses: banks, medical offices, manufacturers, schools and churches wrapping gifts for staff, patients, clients and congregations.",
+      fam="Athens families can drop off at the studio or have gifts collected the same week. Holiday orders, birthday gifts, showers and the odd-shaped gift nobody else wants to wrap."),
+ dict(city="Lenoir City", slug="gift-wrapping-lenoir-city-tn.html", drive="about 25 minutes", county="Loudon County",
+      areas="Lenoir City, Loudon, Tellico Village, Greenback, Philadelphia and Farragut",
+      corp="Loudon County and Tellico Village businesses, HOAs and clubs order coordinated gifts for staff, members and clients, picked up and delivered on a schedule that works around your events.",
+      fam="Lenoir City, Loudon and Tellico Village families use us for Christmas, grandchildren's birthdays and shower gifts, with pickup and delivery on the way past."),
+]
+CITY_PHOTOS = [("sq-christmas-gold", "Christmas tree paper with gold mesh and red glitter bow"), ("sq-rainbow-box", "Large box in watercolor-dot paper with aqua ribbon"),
+               ("sq-nutcracker", "Nutcracker print paper with sage green ribbon"), ("sq-dad-shirt", "Gift wrapped as a striped shirt with buttons and a bow tie")]
+def city_page(c):
+    city = c["city"]; url = f"{SITE}/{c['slug'][:-5]}/"
+    ld = ('<script type="application/ld+json">' + _j.dumps({"@context": "https://schema.org", "@type": "Service", "serviceType": "Gift wrapping service",
+          "name": f"Gift wrapping service in {city}, Tennessee", "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "City", "name": city, "containedInPlace": {"@type": "State", "name": "Tennessee"}},
+          "url": url, "description": f"Professional gift wrapping with pickup and delivery in {city}, TN for corporate holiday gifts, client gifts and family Christmas wrapping.",
+          "offers": {"@type": "Offer", "availability": "https://schema.org/InStock", "description": "Free written quote within one business day"}}, ensure_ascii=False) + '</script>')
+    faqs = [
+      (f"Do you pick up and deliver in {city}?", f"Yes. Pickup and delivery in {city} and {c['county']} is quoted by distance and included in your written quote. Drop-off at the studio in {CITY} is always free, {c['drive']} from {city}."),
+      (f"Can you wrap corporate gifts for a {city} office?", f"Yes. We wrap employee, client and holiday party gifts for {city} businesses in your brand colors with logo gift tags, collect them from your office and deliver them back sorted, or straight to the venue."),
+      (f"How far ahead should a {city} family book Christmas wrapping?", "Holiday slots are held in the order deposits come in and December fills first, so book as early as you can. Rush orders under 72 hours are sometimes possible for a surcharge."),
+    ]
+    ld += '<script type="application/ld+json">' + _j.dumps({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}, ensure_ascii=False) + '</script>'
+    gal = "".join(f'<figure class="gift-tile reveal"><img src="assets/photos/{n}.webp" alt="{a}" width="1200" height="1200" loading="lazy"></figure>' for n, a in CITY_PHOTOS)
+    faq_html = "".join(f'<details class="reveal"><summary>{esc(q)}</summary><div class="a"><p>{esc(a)}</p></div></details>' for q, a in faqs)
+    body = page_head(f"Gift wrapping in {city}", f"Gift wrapping service in {city}, Tennessee",
+      f"Professional gift wrapping with pickup and delivery in {city}. Corporate holiday gifts, client gifts, Christmas for the whole family, weddings, showers and birthdays, wrapped by hand by {OWNER} in {CITY}, {c['drive']} from {city}.", f"{city} · {c['county']}") + f'''
+<section>
+  <div class="wrap two-col">
+    <div class="prose reveal">
+      <h2 style="margin-top:0">Gift wrapping for {city} businesses</h2>
+      <p>{c['corp']}</p>
+      <ul class="checklist" style="margin:14px 0 24px">
+        <li>Brand-color ribbon and printed logo gift tags</li>
+        <li>Consistent wrapping across every gift in the order</li>
+        <li>Pickup from your office, delivery to your office or venue</li>
+        <li>One itemized invoice; business accounts can be invoiced</li>
+      </ul>
+      <h2>Gift wrapping for {city} families</h2>
+      <p>{c['fam']}</p>
+      <p>We serve {c['areas']}.</p>
+      <div class="hero-actions" style="margin-top:22px"><a class="btn btn-primary" href="contact.html">Request a free quote</a><a class="btn btn-secondary" href="tel:{PHONE_TEL}">Call or text {PHONE}</a></div>
+    </div>
+    <div class="reveal"><div class="gallery" style="grid-template-columns:1fr 1fr">{gal}</div><p class="fineprint" style="text-align:center;margin-top:10px">Real orders wrapped in the {CITY} studio.</p></div>
+  </div>
+</section>
+<section class="alt">
+  <div class="wrap">
+    <div class="section-head reveal"><span class="kicker">{city} questions</span><h2>Good to know</h2></div>
+    <div class="faq">{faq_html}</div>
+    <p style="text-align:center;margin-top:24px"><a href="faq.html"><strong>More questions answered →</strong></a> · <a href="about.html#service-area"><strong>Full service area →</strong></a></p>
+  </div>
+</section>
+{cta_band(f"Gift wrapping in {city}, done for you", f"Send a gift count and your date. {OWNER.split()[0]} replies with a free written quote within one business day.")}
+'''
+    return dict(slug=c["slug"], crumb=f"Gift wrapping in {city}", city=city,
+      title=f"Gift Wrapping Service in {city}, TN | Pickup & Delivery | {BIZ}",
+      og_title=f"Gift Wrapping in {city}, Tennessee — {BIZ}",
+      desc=f"Professional gift wrapping in {city}, TN with pickup and delivery. Corporate holiday and client gifts, family Christmas wrapping, weddings and showers. Free quotes, hand-wrapped by {OWNER.split()[0]} in {CITY}.",
+      ld=ld, body=body)
+for _c in CITIES: pages.append(city_page(_c))
+
 if not SHOW_PRICING:
     import shutil
     pages = [p for p in pages if p["slug"] != "pricing.html"]
@@ -1039,10 +1144,32 @@ for p in pages:
         (ROOT / p["slug"]).write_text(f'<!doctype html><meta charset="utf-8"><title>{esc(p["title"])}</title><link rel="canonical" href="{SITE}/{p["slug"][:-5]}/"><meta http-equiv="refresh" content="0; url=/{p["slug"][:-5]}/"><meta name="robots" content="noindex"><a href="/{p["slug"][:-5]}/">Continue</a>', encoding="utf-8")
     print("wrote", p["slug"])
 
-prio = {"index.html": "1.0", "corporate-gift-wrapping.html": "0.9", "holiday-gift-wrapping.html": "0.9", **({"pricing.html": "0.9"} if SHOW_PRICING else {}), "services.html": "0.8", "contact.html": "0.8", "about.html": "0.6", "faq.html": "0.7"}
+prio = {**{c["slug"]: "0.8" for c in CITIES}, "index.html": "1.0", "corporate-gift-wrapping.html": "0.9", "holiday-gift-wrapping.html": "0.9", **({"pricing.html": "0.9"} if SHOW_PRICING else {}), "services.html": "0.8", "contact.html": "0.8", "about.html": "0.6", "faq.html": "0.7"}
 urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</loc><lastmod>{TODAY}</lastmod><changefreq>monthly</changefreq><priority>{pr}</priority></url>\n" for s, pr in prio.items())
 (ROOT / "sitemap.xml").write_text(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9">\n{urls}</urlset>\n', encoding="utf-8")
-(ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you/\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+(ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you/\n\n# AI assistants and answer engines are welcome to read and cite this site.\nUser-agent: GPTBot\nAllow: /\nUser-agent: OAI-SearchBot\nAllow: /\nUser-agent: ChatGPT-User\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: Claude-SearchBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\nUser-agent: Bingbot\nAllow: /\nUser-agent: Applebot\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
+(ROOT / "llms.txt").write_text(f"""# {BIZ} — {TAG}
+
+> Professional gift wrapping service based in {CITY}, Tennessee (ZIP {ZIP}), owner-operated by {OWNER}. Hand-wraps gifts for businesses and families, with pickup and delivery along I-75 from Knoxville to Chattanooga. Free written quotes within one business day. Call or text {PHONE} or email {EMAIL}.
+
+## Services
+- Corporate gift wrapping: holiday party gifts, client and referral gifts, employee appreciation, welcome kits, white elephant and office party gifts. Brand-color ribbon, printed logo gift tags, consistent look across the whole order, pickup from the office, delivery to the office or venue, one invoice. {SITE}/corporate-gift-wrapping/
+- Holiday gift wrapping for families: whole Christmas lists wrapped, Santa paper kept separate, gifts returned sorted by recipient, one paper per person or one matching look, online orders can ship straight to the studio. {SITE}/holiday-gift-wrapping/
+- Occasions: weddings, bridal showers, baby showers, birthdays, anniversaries, Hanukkah, Valentine's Day, Mother's and Father's Day, Easter, graduation. Themed and custom builds (for example a gift wrapped as a shirt and tie, stacked two-tier wraps). {SITE}/services/
+- Every gift includes premium paper, real ribbon, a hand-tied bow and a tag. Unusual shapes (bikes, baskets, instruments, plush toys, bottles) welcome.
+
+## Service area
+Sweetwater (home base, drop-off by appointment, free), Madisonville, Athens, Niota, Loudon, Lenoir City, Tellico Village, Maryville, Alcoa, Farragut, Knoxville, Cleveland, Ooltewah, Chattanooga. City pages: {", ".join(SITE + "/" + c["slug"][:-5] + "/" for c in CITIES)}
+
+## How to book
+Request a free quote at {SITE}/contact/ (or the form on the home page), or call or text {PHONE}. Quotes are free and returned within one business day. A 50% deposit holds a date; December fills first.
+
+## Key pages
+- Home: {SITE}/
+- About {OWNER}: {SITE}/about/
+- FAQ: {SITE}/faq/
+- Contact: {SITE}/contact/
+""", encoding="utf-8")
 (ROOT / "CNAME").write_text("allwrappeduptn.com\n", encoding="utf-8")
 (ROOT / "site.webmanifest").write_text(_j.dumps({"name": f"{BIZ} — {TAG}", "short_name": BIZ, "start_url": "/", "display": "standalone", "background_color": "#fffdfa", "theme_color": "#b23a5e", "icons": [{"src": "/assets/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}, {"src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml"}]}, indent=2), encoding="utf-8")
 print("wrote sitemap.xml robots.txt CNAME site.webmanifest")
