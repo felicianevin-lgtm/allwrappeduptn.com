@@ -369,8 +369,7 @@ home_body = f'''
       <h1>Professional gift wrapping for <em>businesses and busy families</em></h1>
       <p class="lede">Themed, custom and classic gift wrapping, from a shirt-and-tie for Dad to a whole Christmas in one family's colors. Corporate orders, client gifts and family celebrations, collected and delivered across East Tennessee.</p>
       <div class="hero-actions">
-        <a class="btn btn-primary btn-lg" href="contact.html">Request a free quote</a>
-        {'<a class="btn btn-secondary btn-lg" href="pricing.html">See packages &amp; pricing</a>' if SHOW_PRICING else '<a class="btn btn-secondary btn-lg" href="#free-quote">Get a free quote</a>'}
+        {'<a class="btn btn-primary btn-lg" href="contact.html">Request a free quote</a><a class="btn btn-secondary btn-lg" href="pricing.html">See packages &amp; pricing</a>' if SHOW_PRICING else '<a class="btn btn-primary btn-lg" href="#free-quote">Get a free quote</a><a class="btn btn-secondary btn-lg" href="#work">See recent work</a>'}
       </div>
       <ul class="hero-proof">
         <li>{ICONS['check']} Pickup &amp; delivery available</li>
