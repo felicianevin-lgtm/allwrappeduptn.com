@@ -1069,6 +1069,14 @@ CITIES = [
       areas="Athens, Etowah, Englewood, Riceville, Niota and Tennessee Wesleyan University",
       corp="Athens is close enough that pickup and delivery is quick and easy for McMinn County businesses: banks, medical offices, manufacturers, schools and churches wrapping gifts for staff, patients, clients and congregations.",
       fam="Athens families can drop off at the studio or have gifts collected the same week. Holiday orders, birthday gifts, showers and the odd-shaped gift nobody else wants to wrap."),
+ dict(city="Farragut", slug="gift-wrapping-farragut-tn.html", drive="about 30 minutes up I-75", county="Knox County",
+      areas="Farragut, Concord, Hardin Valley, Turkey Creek, Choto, Northshore and the Pellissippi Parkway corridor",
+      corp="Farragut's professional offices, medical and dental practices, real estate teams and the businesses around Turkey Creek and Pellissippi order client, staff and holiday gifts wrapped in company colors with logo tags, collected from the office and delivered back ready to hand out.",
+      fam="Farragut families are our most frequent pickup stop on the Knoxville side: whole Christmas lists collected from home, teacher and coach gifts included, everything returned sorted by person with Santa paper kept separate."),
+ dict(city="Sweetwater", slug="gift-wrapping-sweetwater-tn.html", drive="right here, drop-off by appointment", county="Monroe County",
+      areas="Sweetwater, Madisonville, Vonore, Tellico Plains, Niota, Philadelphia and the rest of Monroe County",
+      corp="Sweetwater and Monroe County businesses, from Main Street shops and banks to the plants along Highway 68 and I-75, get the quickest turnaround of anyone: drop gifts at the studio or we collect them, and they come back wrapped, tagged and ready for the office party.",
+      fam="This is home base. Sweetwater families drop off by appointment, evenings and weekends included, with no pickup charge at all, and every gift comes back wrapped, tagged and sorted."),
  dict(city="Lenoir City", slug="gift-wrapping-lenoir-city-tn.html", drive="about 25 minutes", county="Loudon County",
       areas="Lenoir City, Loudon, Tellico Village, Greenback, Philadelphia and Farragut",
       corp="Loudon County and Tellico Village businesses, HOAs and clubs order coordinated gifts for staff, members and clients, picked up and delivered on a schedule that works around your events.",
@@ -1078,12 +1086,16 @@ CITY_PHOTOS = [("sq-christmas-gold", "Christmas tree paper with gold mesh and re
                ("sq-nutcracker", "Nutcracker print paper with sage green ribbon"), ("sq-dad-shirt", "Gift wrapped as a striped shirt with buttons and a bow tie")]
 def city_page(c):
     city = c["city"]; url = f"{SITE}/{c['slug'][:-5]}/"
+    home = city == CITY
+    near = "" if home else f" in {CITY}, {c['drive']} from {city}"
     ld = ('<script type="application/ld+json">' + _j.dumps({"@context": "https://schema.org", "@type": "Service", "serviceType": "Gift wrapping service",
           "name": f"Gift wrapping service in {city}, Tennessee", "provider": {"@id": SITE + "/#business"}, "areaServed": {"@type": "City", "name": city, "containedInPlace": {"@type": "State", "name": "Tennessee"}},
           "url": url, "description": f"Professional gift wrapping with pickup and delivery in {city}, TN for corporate holiday gifts, client gifts and family Christmas wrapping.",
           "offers": {"@type": "Offer", "availability": "https://schema.org/InStock", "description": "Free written quote within one business day"}}, ensure_ascii=False) + '</script>')
+    home = city == CITY
+    near = "" if home else f" in {CITY}, {c['drive']} from {city}"
     faqs = [
-      (f"Do you pick up and deliver in {city}?", f"Yes. Pickup and delivery in {city} and {c['county']} is quoted by distance and included in your written quote. Drop-off at the studio in {CITY} is always free, {c['drive']} from {city}."),
+      (f"Do you pick up and deliver in {city}?", (f"Yes, and since {city} is home base there is no charge: drop off at the studio by appointment, or we collect from your home or office in {c['county']}." if home else f"Yes. Pickup and delivery in {city} and {c['county']} is quoted by distance and included in your written quote. Drop-off at the studio in {CITY} is always free, {c['drive']} from {city}.")),
       (f"Can you wrap corporate gifts for a {city} office?", f"Yes. We wrap employee, client and holiday party gifts for {city} businesses in your brand colors with logo gift tags, collect them from your office and deliver them back sorted, or straight to the venue."),
       (f"How far ahead should a {city} family book Christmas wrapping?", "Holiday slots are held in the order deposits come in and December fills first, so book as early as you can. Rush orders under 72 hours are sometimes possible for a surcharge."),
     ]
@@ -1091,7 +1103,7 @@ def city_page(c):
     gal = "".join(f'<figure class="gift-tile reveal"><img src="assets/photos/{n}.webp" alt="{a}" width="1200" height="1200" loading="lazy"></figure>' for n, a in CITY_PHOTOS)
     faq_html = "".join(f'<details class="reveal"><summary>{esc(q)}</summary><div class="a"><p>{esc(a)}</p></div></details>' for q, a in faqs)
     body = page_head(f"Gift wrapping in {city}", f"Gift wrapping service in {city}, Tennessee",
-      f"Professional gift wrapping with pickup and delivery in {city}. Corporate holiday gifts, client gifts, Christmas for the whole family, weddings, showers and birthdays, wrapped by hand by {OWNER} in {CITY}, {c['drive']} from {city}.", f"{city} · {c['county']}") + f'''
+      f"Professional gift wrapping with pickup and delivery in {city}. Corporate holiday gifts, client gifts, Christmas for the whole family, weddings, showers and birthdays, wrapped by hand by {OWNER}{near}.", f"{city} · {c['county']}") + f'''
 <section>
   <div class="wrap two-col">
     <div class="prose reveal">
