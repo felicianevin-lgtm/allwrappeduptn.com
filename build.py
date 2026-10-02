@@ -350,6 +350,9 @@ HOME_QUOTE = f'''<section class="pinkbg" id="free-quote">
   </div>
 </section>'''
 
+# Home page hero photo: (file stem in assets/photos, alt text, (width, height), CSS aspect ratio of the frame)
+HERO_PHOTO = ("sq-rainbow-box", "Large gift box in watercolor-dot paper with aqua and confetti ribbon, wrapped by All Wrapped Up", (1200, 1200), "1/1")
+
 # ---------- pages ----------
 pages = []
 
@@ -378,7 +381,7 @@ home_body = f'''
       </ul>
     </div>
     <div class="hero-art">
-      <div class="hero-photo"><img src="assets/photos/hero-navy-chiffon.webp" alt="Gift wrapped in navy paper with a navy satin and pale blue chiffon bow by All Wrapped Up" width="1200" height="1500"></div>
+      <div class="hero-photo" style="aspect-ratio:{HERO_PHOTO[3]}"><img src="assets/photos/{HERO_PHOTO[0]}.webp" alt="{HERO_PHOTO[1]}" width="{HERO_PHOTO[2][0]}" height="{HERO_PHOTO[2][1]}"></div>
       <div class="hero-badge"><strong>Now booking</strong>Holiday 2026 orders</div>
     </div>
   </div>
