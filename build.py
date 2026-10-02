@@ -9,6 +9,7 @@ SITE = "https://allwrappeduptn.com"
 BIZ = "All Wrapped Up"
 TAG = "Ribbons & Bows"
 OWNER = "Amiebeth Thearp"
+OWNER_PUBLIC = "Amiebeth"   # shown on the site; surname and direct contact details stay private
 PHONE = "540-340-4905"
 PHONE_TEL = "+15403404905"
 EMAIL = "abthearp@gmail.com"
@@ -25,7 +26,7 @@ ASSET_V = _h.md5((ROOT / "assets" / "main.js").read_bytes() + (ROOT / "assets" /
 FORM_EMAIL = "felicia.nevin@gmail.com"
 FORM_ACTION = f"https://formsubmit.co/{FORM_EMAIL}"
 # Copies of every quote request also go here (no activation needed for CC addresses).
-FORM_CC = EMAIL
+FORM_CC = ""   # no CC: a CC address is visible in the page source. Forward leads from the FORM_EMAIL inbox instead.
 # Lead-generation mode: hide all prices and the pricing page, put a quote form on the
 # home page. Flip to True to bring the full price list back.
 SHOW_PRICING = False
@@ -215,20 +216,20 @@ def layout(page):
         <li><a href="about.html#service-area">Service area</a></li>
       </ul></div>
       <div><h4>Contact</h4><ul>
-        <li><a href="tel:{PHONE_TEL}">{PHONE}</a></li>
-        <li><a href="mailto:{EMAIL}">{EMAIL}</a></li>
+        <li><a href="contact.html">Request a free quote</a></li>
+        <li><a href="contact.html?type=question">Ask a question</a></li>
         <li>{CITY}, {REGION} {ZIP}</li>
         <li>Knoxville · Chattanooga</li>
       </ul></div>
     </div>
     <p class="footer-areas"><strong>Gift wrapping near you:</strong> {" · ".join(f'<a href="{c["slug"]}">{c["city"]}</a>' for c in CITIES)} · <a href="about.html#service-area">Sweetwater &amp; all of East Tennessee</a></p>
     <div class="footer-bottom">
-      <span>© <span data-year>2026</span> {BIZ} — {TAG}. {OWNER}, {CITY}, Tennessee.</span>
+      <span>© <span data-year>2026</span> {BIZ} — {TAG}. {CITY}, Tennessee.</span>
       <span>Home-based in Sweetwater · By appointment · Pickup &amp; delivery available</span>
     </div>
   </div>
 </footer>
-<div class="mobile-bar"><a class="btn btn-secondary" href="tel:{PHONE_TEL}">{ICONS['phone']}Call</a><a class="btn btn-primary" href="contact.html">{ICONS['gift']}Get a Quote</a></div>
+<div class="mobile-bar"><a class="btn btn-secondary" href="contact.html?type=question">{ICONS['mail']}Ask a question</a><a class="btn btn-primary" href="contact.html">{ICONS['gift']}Get a Quote</a></div>
 <script src="assets/main.js?v={ASSET_V}" defer></script>
 </body>
 </html>
@@ -245,9 +246,8 @@ LOCAL_BUSINESS_LD = f'''<script type="application/ld+json">
   "url": "{SITE}/",
   "logo": "{SITE}/assets/apple-touch-icon.png",
   "image": "{SITE}/assets/og-image.jpg",
-  "telephone": "{PHONE_TEL}",
-  "email": "{EMAIL}",
-  "founder": {{"@type": "Person", "name": "{OWNER}"}},
+  "founder": {{"@type": "Person", "name": "{OWNER_PUBLIC}"}},
+  "potentialAction": {{"@type": "ReserveAction", "name": "Request a free quote", "target": "{SITE}/contact/"}},
   "priceRange": "$$",
   "address": {{"@type": "PostalAddress", "addressLocality": "{CITY}", "addressRegion": "{REGION}", "postalCode": "{ZIP}", "addressCountry": "US"}},
   "geo": {{"@type": "GeoCoordinates", "latitude": 35.6017, "longitude": -84.4613}},
@@ -266,12 +266,12 @@ LOCAL_BUSINESS_LD = f'''<script type="application/ld+json">
 </script>'''
 
 def cta_band(h, p, primary=("Request a free quote", "contact.html"), secondary=None):
-    secondary = secondary or (("See pricing", "pricing.html") if SHOW_PRICING else ("Call or text " + PHONE, "tel:" + PHONE_TEL))
+    secondary = secondary or (("See pricing", "pricing.html") if SHOW_PRICING else ("Ask a question", "contact.html?type=question"))
     return f'''<section class="cta-band"><div class="wrap reveal">
   <span class="kicker">Get started</span>
   <h2>{h}</h2><p>{p}</p>
   <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="{primary[1]}">{primary[0]}</a><a class="btn btn-secondary btn-lg" href="{secondary[1]}">{secondary[0]}</a></div>
-  <p class="contact-line">Call or text <a href="tel:{PHONE_TEL}">{PHONE}</a> · <a href="mailto:{EMAIL}">{EMAIL}</a></p>
+  <p class="contact-line">Every request is answered personally, within one business day.</p>
 </div></section>'''
 
 def page_head(crumb, h1, lede, kicker=None):
@@ -317,7 +317,7 @@ def estimator(compact=False):
 FORM_HIDDEN = f'''<input type="hidden" name="_subject" value="New gift wrapping quote request">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_next" value="{SITE}/thank-you/">
-      <input type="hidden" name="_autoresponse" value="Thanks for reaching out to All Wrapped Up. We received your request and will reply with a free quote within one business day. For anything urgent, call or text {PHONE}.">
+      <input type="hidden" name="_autoresponse" value="Thanks for reaching out to All Wrapped Up. We received your request and will reply with a free quote within one business day. If you have a deadline, mention it in your message and we will prioritize it.">
       {f'<input type="hidden" name="_cc" value="{FORM_CC}">' if FORM_CC and FORM_CC != FORM_EMAIL else ''}
       <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">'''
 
@@ -346,7 +346,7 @@ HOME_QUOTE = f'''<section class="pinkbg" id="free-quote">
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Free quote</span><h2>Tell us what you need. We'll send a free quote.</h2><p>Every order is a little different, so every quote is custom and free. Share a few details and {OWNER.split()[0]} will get back to you within one business day.</p></div>
     <div class="contact-grid" style="grid-template-columns:1fr;max-width:820px;margin:0 auto">{quote_form()}</div>
-    <p class="fineprint" style="text-align:center;margin-top:16px">Prefer to talk? Call or text <a href="tel:{PHONE_TEL}"><strong>{PHONE}</strong></a>.</p>
+    <p class="fineprint" style="text-align:center;margin-top:16px">Just have a question? <a href="contact.html?type=question"><strong>Ask here</strong></a> and we will get right back to you.</p>
   </div>
 </section>'''
 
@@ -421,7 +421,7 @@ home_body = f'''
       <div><dt>Where</dt><dd>Based in {CITY}, Tennessee, on I-75 between Knoxville and Chattanooga. Drop-off in {CITY} by appointment. Pickup and delivery across East Tennessee including Knoxville, Farragut, Maryville, Lenoir City, Loudon, Athens, Madisonville, Cleveland, Ooltewah and Chattanooga.</dd></div>
       <div><dt>Who it's for</dt><dd>Offices, medical and dental practices, law firms, dealerships, real estate teams, banks, churches and schools that need dozens or hundreds of gifts wrapped consistently, and families who would rather spend December with their people than with the tape dispenser.</dd></div>
       <div><dt>What's included</dt><dd>Premium paper, real ribbon, a hand-tied bow and a gift tag on every gift. Themed and custom builds, logo gift tags, handwritten notes, Santa paper kept separate, gifts returned sorted by recipient, and online orders can ship straight to us.</dd></div>
-      <div><dt>How to book</dt><dd>Request a free quote through the form on this page, or call or text <a href="tel:{PHONE_TEL}">{PHONE}</a>. Quotes are returned within one business day. Owner-operated by {OWNER}.</dd></div>
+      <div><dt>How to book</dt><dd>Request a free quote through the form on this page, or send a question the same way. Every request is answered personally within one business day. Owner-operated, home-based studio.</dd></div>
     </dl>
   </div>
 </section>
@@ -600,7 +600,7 @@ corp_body = page_head("Corporate gift wrapping", "Corporate gift wrapping for ho
   </div>
 </section>
 
-{cta_band("Receive a corporate quote within one business day", "Share the gift count, approximate sizes and your event date. We will return pricing, a timeline and a photographed sample in your brand colors.", ("Request a corporate quote", "contact.html?type=corporate"), ("Call " + PHONE, "tel:" + PHONE_TEL))}
+{cta_band("Receive a corporate quote within one business day", "Share the gift count, approximate sizes and your event date. We will return pricing, a timeline and a photographed sample in your brand colors.", ("Request a corporate quote", "contact.html?type=corporate"), ("Ask a question", "contact.html?type=question"))}
 '''
 pages.append(dict(slug="corporate-gift-wrapping.html", crumb="Corporate gift wrapping",
   title="Corporate Gift Wrapping | Knoxville & Chattanooga TN",
@@ -791,7 +791,7 @@ HOL_PRICING = f'''<section>
 HOL_QUOTE = f'''<section>
   <div class="wrap">
     <div class="section-head reveal"><span class="kicker">Holiday quotes</span><h2>Tell us about your list, we'll send a free quote</h2><p>Family orders are priced by the number of gifts, with paper, ribbon, bows and tags included. Send a rough count and when you need them back; the quote is free and comes within one business day.</p></div>
-    <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="contact.html?type=family">Get a free holiday quote</a><a class="btn btn-secondary btn-lg" href="sms:{PHONE_TEL}">Text {PHONE}</a></div>
+    <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary btn-lg" href="contact.html?type=family">Get a free holiday quote</a><a class="btn btn-secondary btn-lg" href="contact.html?type=question">Ask a question</a></div>
   </div>
 </section>'''
 holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift wrapping for busy families",
@@ -875,7 +875,7 @@ holiday_body = page_head("Holiday gift wrapping", "Christmas &amp; holiday gift 
   </div>
 </section>
 
-{cta_band("Reserve your holiday date", "Space is limited and December dates go in the order deposits come in. A 50% deposit holds yours. Quotes are complimentary.", ("Book holiday wrapping", "contact.html?type=family"), ("Text " + PHONE, "sms:" + PHONE_TEL))}
+{cta_band("Reserve your holiday date", "Space is limited and December dates go in the order deposits come in. A 50% deposit holds yours. Quotes are complimentary.", ("Book holiday wrapping", "contact.html?type=family"), ("Ask a question", "contact.html?type=question"))}
 '''
 pages.append(dict(slug="holiday-gift-wrapping.html", crumb="Holiday gift wrapping",
   title="Christmas Gift Wrapping Service | Sweetwater, Knoxville & Chattanooga",
@@ -890,7 +890,7 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
   <div class="wrap two-col">
     <div class="prose reveal">
       <h2 style="margin-top:0">A little about me</h2>
-      <p>I'm {OWNER}. {BIZ} began because every December I was the person friends and family handed their gifts to. Somewhere between wrapping for the whole street and the first office that asked me to finish their client gifts, it became a business.</p>
+      <p>I'm {OWNER_PUBLIC}. {BIZ} began because every December I was the person friends and family handed their gifts to. Somewhere between wrapping for the whole street and the first office that asked me to finish their client gifts, it became a business.</p>
       <p>I work from my home in {CITY}, right on I-75 between Knoxville and Chattanooga, so pickup and delivery in either direction is an easy trip. Every gift is wrapped by hand, by me. What I love most is a theme: a shirt and tie for Dad, a jungle nursery for a baby shower, a whole Christmas in one family's colors. Classic paper-and-ribbon wraps are always on the menu too.</p>
       <h3>What I care about</h3>
       <ul>
@@ -932,11 +932,11 @@ about_body = page_head("About", f"Meet {OWNER.split()[0]}, the hands behind the 
 
 {cta_band("Let's talk about your gifts", "One anniversary gift or a thousand client boxes, I would be glad to hear about it.")}
 '''
-about_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"{OWNER}","jobTitle":"Owner & gift wrapper","worksFor":{{"@id":"{SITE}/#business"}},"email":"{EMAIL}","telephone":"{PHONE_TEL}","address":{{"@type":"PostalAddress","addressLocality":"{CITY}","addressRegion":"{REGION}","addressCountry":"US"}}}}</script>'''
+about_ld = f'''<script type="application/ld+json">{{"@context":"https://schema.org","@type":"Person","name":"{OWNER_PUBLIC}","jobTitle":"Owner & gift wrapper","worksFor":{{"@id":"{SITE}/#business"}},"email":"{EMAIL}","telephone":"{PHONE_TEL}","address":{{"@type":"PostalAddress","addressLocality":"{CITY}","addressRegion":"{REGION}","addressCountry":"US"}}}}</script>'''
 pages.append(dict(slug="about.html", crumb="About",
-  title=f"About {OWNER} | {BIZ}, Sweetwater TN",
+  title=f"About {OWNER_PUBLIC} | {BIZ}, Sweetwater TN",
   og_title=f"About {BIZ} — Home-Based Gift Wrapping in Sweetwater, TN",
-  desc=f"Meet {OWNER}, owner of {BIZ}, a home-based gift wrapping service in Sweetwater, Tennessee serving Knoxville to Chattanooga with pickup and delivery.",
+  desc=f"Meet {OWNER_PUBLIC}, owner of {BIZ}, a home-based gift wrapping service in Sweetwater, Tennessee serving Knoxville to Chattanooga with pickup and delivery.",
   ld=about_ld, body=about_body))
 
 # FAQ
@@ -954,7 +954,7 @@ faqs = [
  ("Do you wrap gift cards?", "Yes. A gift card in a plain envelope is easy to overlook. We dress it up in a small box with ribbon and a tag, and it counts as one gift in your group. Or we build it into a themed wrap that hints at where the card is from."),
  ("What payment methods do you accept?", "Cash, Venmo and personal check. A 50% deposit reserves your date and the balance is due at delivery. Business accounts can be invoiced."),
  ("Is the deposit refundable?", "The deposit holds your date and pays for your materials, which are bought right after you book, so it is non-refundable once materials have been purchased. If your plans change, one reschedule is free when space allows. Space is limited and dates are held in the order deposits come in, so booking early matters in November and December."),
- ("Where are you located?", f"{BIZ} is home-based in {CITY}, Tennessee, right off I-75 between Knoxville and Chattanooga. Drop-offs are by appointment. Call or text {PHONE} to schedule."),
+ ("Where are you located?", f"{BIZ} is home-based in {CITY}, Tennessee, right off I-75 between Knoxville and Chattanooga. Drop-offs are by appointment, arranged when you book; the address is shared at that point."),
  ("Are my gifts safe with you?", "Every gift is logged at intake with a description, stored safely and returned with a checklist. Corporate orders can be labeled by recipient or department for easy distribution."),
 ]
 faq_html = "".join(f'<details class="reveal"><summary>{esc(q)}</summary><div class="a"><p>{esc(a)}</p></div></details>' for q, a in faqs)
@@ -972,7 +972,7 @@ pages.append(dict(slug="faq.html", crumb="FAQ",
   ld=faq_ld, body=faq_body))
 
 # CONTACT
-contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us what you are wrapping and when you need it. Quotes are returned within one business day. Prefer to talk? Call or text {PHONE}.", "Get a quote") + f'''
+contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us what you are wrapping and when you need it. Quotes and questions are answered personally within one business day.", "Get a quote") + f'''
 <section>
   <div class="wrap contact-grid">
     <form class="form-card reveal" data-contact data-mailto-to="{FORM_EMAIL}" action="{FORM_ACTION}" method="POST">
@@ -986,23 +986,23 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
         <div class="field"><label for="c-phone">Phone</label><input id="c-phone" type="tel" name="phone" autocomplete="tel"></div>
       </div>
       <div class="form-row">
-        <div class="field"><label for="c-type">I'm wrapping for *</label><select id="c-type" name="client_type" required><option value="">Choose one</option><option value="corporate">A business / corporate event</option><option value="family">My family or household</option><option value="wedding">A wedding</option><option value="shower">A bridal or baby shower</option><option value="birthday">A birthday or anniversary</option><option value="other">Something else</option></select></div>
-        <div class="field"><label for="c-count">Approximate number of gifts *</label><input id="c-count" type="number" name="gift_count" min="1" required inputmode="numeric"></div>
+        <div class="field"><label for="c-type">I'm wrapping for *</label><select id="c-type" name="client_type" required><option value="">Choose one</option><option value="corporate">A business / corporate event</option><option value="family">My family or household</option><option value="wedding">A wedding</option><option value="shower">A bridal or baby shower</option><option value="birthday">A birthday or anniversary</option><option value="question">I just have a question</option><option value="other">Something else</option></select></div>
+        <div class="field"><label for="c-count">Approximate number of gifts</label><input id="c-count" type="number" name="gift_count" min="1" inputmode="numeric" placeholder="Leave blank if just asking"></div>
       </div>
       <div class="form-row">
         <div class="field"><label for="c-date">Need them by</label><input id="c-date" type="date" name="needed_by"></div>
         <div class="field"><label for="c-city">Your city</label><input id="c-city" name="city" placeholder="Sweetwater, Knoxville, Chattanooga…" autocomplete="address-level2"></div>
       </div>
       <div class="field"><label for="c-pickup">Pickup &amp; delivery?</label><select id="c-pickup" name="pickup"><option>I'll drop off in Sweetwater</option><option>Please pick up and deliver</option><option>Ship gifts directly to you</option><option>Not sure yet</option></select></div>
-      <div class="field"><label for="c-msg">Tell us about the gifts</label><textarea id="c-msg" name="message" rows="5" placeholder="Sizes, colors you love, brand colors, anything oversized, event details…"></textarea></div>
+      <div class="field"><label for="c-reach">Best way to reach you</label><select id="c-reach" name="preferred_contact"><option>Email</option><option>Text</option><option>Phone call</option></select></div>
+      <div class="field"><label for="c-msg">Tell us about the gifts, or ask your question</label><textarea id="c-msg" name="message" rows="5" placeholder="Sizes, colors you love, brand colors, anything oversized, event details, or anything you would like to know…"></textarea></div>
       <button class="btn btn-primary btn-lg btn-block" type="submit">Send my quote request</button>
       <p class="form-note">Or <a href="#" data-mailto>open this request in your email app</a>. Your information is never shared.</p>
     </form>
     <aside class="info-card reveal">
       <h3>Reach {OWNER.split()[0]} directly</h3>
       <ul class="info-list">
-        <li>{ICONS['phone']}<span>Call or text<br><a href="tel:{PHONE_TEL}">{PHONE}</a></span></li>
-        <li>{ICONS['mail']}<span>Email<br><a href="mailto:{EMAIL}">{EMAIL}</a></span></li>
+        <li>{ICONS['mail']}<span>How we reply<br>By email or phone, whichever you give us, within one business day.</span></li>
         <li>{ICONS['pin']}<span>Based in<br><strong>{CITY}, Tennessee {ZIP}</strong><br>Home-based. Drop-off by appointment; address shared when you book.</span></li>
         <li>{ICONS['truck']}<span>Pickup &amp; delivery<br>Knoxville · Maryville · Athens · Cleveland · Chattanooga</span></li>
       </ul>
@@ -1013,16 +1013,16 @@ contact_body = page_head("Contact", "Request a gift wrapping quote", f"Tell us w
 </section>
 '''
 pages.append(dict(slug="contact.html", crumb="Contact",
-  title=f"Get a Gift Wrapping Quote | {BIZ} | {PHONE}",
+  title=f"Get a Gift Wrapping Quote | {BIZ}, Sweetwater TN",
   og_title="Request a Free Gift Wrapping Quote — All Wrapped Up",
-  desc=f"Free quote for corporate or family gift wrapping in Sweetwater, Knoxville or Chattanooga, TN. Call or text {PHONE} or email {EMAIL}.",
+  desc=f"Free quote for corporate or family gift wrapping in Sweetwater, Knoxville or Chattanooga, TN. Fill in a short form and hear back within one business day.",
   body=contact_body))
 
 # THANK YOU
 pages.append(dict(slug="thank-you.html", crumb="Thank you", noindex=True,
   title="Thanks! Your quote request is in | All Wrapped Up",
   desc="Your gift wrapping quote request has been received.",
-  body=page_head("Thank you", "Your request has been received", f"We will reply within one business day with your free quote and next steps. For anything urgent, text {PHONE}.", "Thank you") + f'''
+  body=page_head("Thank you", "Your request has been received", f"We will reply within one business day with your free quote and next steps. If you mentioned a deadline, we will prioritize it.", "Thank you") + f'''
 <section><div class="wrap" style="text-align:center"><div class="gift-tile reveal in" style="background:#fde4ee;width:220px;margin:0 auto 24px">{gift_svg("#fff","#e5648f","#fff","#b23a5e","#fde4ee")}</div>
 <a class="btn btn-primary" href="index.html">Back to the home page</a></div></section>'''))
 
@@ -1110,7 +1110,7 @@ def city_page(c):
     gal = "".join(f'<figure class="gift-tile reveal"><img src="assets/photos/{n}.webp" alt="{a}" width="1200" height="1200" loading="lazy"></figure>' for n, a in CITY_PHOTOS)
     faq_html = "".join(f'<details class="reveal"><summary>{esc(q)}</summary><div class="a"><p>{esc(a)}</p></div></details>' for q, a in faqs)
     body = page_head(f"Gift wrapping in {city}", f"Gift wrapping service in {city}, Tennessee",
-      f"Professional gift wrapping with pickup and delivery in {city}. Corporate holiday gifts, client gifts, Christmas for the whole family, weddings, showers and birthdays, wrapped by hand by {OWNER}{near}.", f"{city} · {c['county']}") + f'''
+      f"Professional gift wrapping with pickup and delivery in {city}. Corporate holiday gifts, client gifts, Christmas for the whole family, weddings, showers and birthdays, wrapped by hand by {OWNER_PUBLIC}{near}.", f"{city} · {c['county']}") + f'''
 <section>
   <div class="wrap two-col">
     <div class="prose reveal">
@@ -1125,7 +1125,7 @@ def city_page(c):
       <h2>Gift wrapping for {city} families</h2>
       <p>{c['fam']}</p>
       <p>We serve {c['areas']}.</p>
-      <div class="hero-actions" style="margin-top:22px"><a class="btn btn-primary" href="contact.html">Request a free quote</a><a class="btn btn-secondary" href="tel:{PHONE_TEL}">Call or text {PHONE}</a></div>
+      <div class="hero-actions" style="margin-top:22px"><a class="btn btn-primary" href="contact.html">Request a free quote</a><a class="btn btn-secondary" href="contact.html?type=question">Ask a question</a></div>
     </div>
     <div class="reveal"><div class="gallery" style="grid-template-columns:1fr 1fr">{gal}</div><p class="fineprint" style="text-align:center;margin-top:10px">Real orders wrapped in the {CITY} studio.</p></div>
   </div>
@@ -1169,7 +1169,7 @@ urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</l
 (ROOT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nDisallow: /thank-you/\n\n# AI assistants and answer engines are welcome to read and cite this site.\nUser-agent: GPTBot\nAllow: /\nUser-agent: OAI-SearchBot\nAllow: /\nUser-agent: ChatGPT-User\nAllow: /\nUser-agent: ClaudeBot\nAllow: /\nUser-agent: Claude-SearchBot\nAllow: /\nUser-agent: PerplexityBot\nAllow: /\nUser-agent: Google-Extended\nAllow: /\nUser-agent: Bingbot\nAllow: /\nUser-agent: Applebot\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n", encoding="utf-8")
 (ROOT / "llms.txt").write_text(f"""# {BIZ} — {TAG}
 
-> Professional gift wrapping service based in {CITY}, Tennessee (ZIP {ZIP}), owner-operated by {OWNER}. Hand-wraps gifts for businesses and families, with pickup and delivery along I-75 from Knoxville to Chattanooga. Free written quotes within one business day. Call or text {PHONE} or email {EMAIL}.
+> Professional gift wrapping service based in {CITY}, Tennessee (ZIP {ZIP}), owner-operated by {OWNER_PUBLIC}. Hand-wraps gifts for businesses and families, with pickup and delivery along I-75 from Knoxville to Chattanooga. Free written quotes within one business day via the website form.
 
 ## Services
 - Corporate gift wrapping: holiday party gifts, client and referral gifts, employee appreciation, welcome kits, white elephant and office party gifts. Brand-color ribbon, printed logo gift tags, consistent look across the whole order, pickup from the office, delivery to the office or venue, one invoice. {SITE}/corporate-gift-wrapping/
@@ -1181,11 +1181,11 @@ urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</l
 Sweetwater (home base, drop-off by appointment, free), Madisonville, Athens, Niota, Loudon, Lenoir City, Tellico Village, Maryville, Alcoa, Farragut, Knoxville, Cleveland, Ooltewah, Chattanooga. City pages: {", ".join(SITE + "/" + c["slug"][:-5] + "/" for c in CITIES)}
 
 ## How to book
-Request a free quote at {SITE}/contact/ (or the form on the home page), or call or text {PHONE}. Quotes are free and returned within one business day. A 50% deposit holds a date; December fills first.
+Request a free quote or ask a question at {SITE}/contact/ (or the form on the home page). Contact is through the website form only; the owner replies personally. Quotes are free and returned within one business day. A 50% deposit holds a date; December fills first.
 
 ## Key pages
 - Home: {SITE}/
-- About {OWNER}: {SITE}/about/
+- About {OWNER_PUBLIC}: {SITE}/about/
 - FAQ: {SITE}/faq/
 - Contact: {SITE}/contact/
 """, encoding="utf-8")

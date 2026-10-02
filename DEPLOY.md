@@ -78,9 +78,14 @@ Three settings at the top of `build.py` control the current setup:
 - `SHOW_PRICING = False` hides every price, removes the pricing page and nav link, and
   puts a free-quote form on the home page. Set it to `True` and rebuild to bring the full
   price list back; nothing is lost.
-- `FORM_CC = EMAIL` sends a copy of every quote request to Amiebeth automatically. The
-  primary address (`FORM_EMAIL`, Felicia) is the one FormSubmit activates; CC addresses
-  need no activation. Set `FORM_CC = ""` to stop copying her.
+- Amiebeth's phone, email and surname are kept off the site entirely (`OWNER_PUBLIC` is
+  first name only; no telephone/email in the schema). Visitors contact her only through
+  the form. Requests arrive at `FORM_EMAIL` (Felicia). To pass them to Amiebeth without
+  publishing her address, set up a Gmail filter on Felicia's inbox: from
+  `formsubmit.co` → forward to abthearp@gmail.com. (A `_cc` field would expose her
+  address in the page source, so `FORM_CC` is intentionally empty.) To hide Felicia's
+  address too, FormSubmit emails a random alias string after activation; put that
+  string in `FORM_EMAIL` in place of the address.
 - `META_PIXEL_ID = ""` adds the Meta (Facebook) Pixel on every page and fires a "Lead"
   event on the thank-you page once an ID is filled in. Empty means no tracking at all.
   For ads: Meta Ads Manager → Events Manager → Connect data source → Web → copy the
