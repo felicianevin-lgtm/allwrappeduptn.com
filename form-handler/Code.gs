@@ -54,13 +54,13 @@ function doPost(e) {
 
     var who = p.name || 'Someone';
     var kind = ({corporate: 'corporate', family: 'family holiday', wedding: 'wedding', shower: 'shower', birthday: 'birthday / anniversary', question: 'question', other: ''})[p.client_type] || '';
-    var subject = (p.client_type === 'question' ? 'Question from ' : 'New ' + (kind ? kind + ' ' : '') + 'quote request from ') + who;
+    var subject = 'New Gift Wrapping Website Lead Inquiry Received' + (who !== 'Someone' ? ' — ' + who : '') + (kind ? ' (' + kind + ')' : '');
     var lines = COLUMNS.slice(1, -1).map(function (c) {
       var v = typeof c[1] === 'function' ? '' : (p[c[1]] || '');
       return v ? '<tr><td style="padding:6px 12px 6px 0;color:#857a7d;white-space:nowrap;vertical-align:top">' + c[0] + '</td><td style="padding:6px 0">' + esc(v).replace(/\n/g, '<br>') + '</td></tr>' : '';
     }).join('');
     var html = '<div style="font-family:Arial,sans-serif;font-size:15px;color:#221b1d;max-width:620px">' +
-      '<p style="font-size:18px;margin:0 0 14px"><b>' + esc(subject) + '</b></p>' +
+      '<p style="font-size:18px;margin:0 0 14px"><b>New Gift Wrapping Website Lead Inquiry Received</b></p>' +
       '<table style="border-collapse:collapse">' + lines + '</table>' +
       '<p style="margin:18px 0 0">Reply to this email to answer ' + esc(who) + ' directly' + (p.preferred_contact ? ' (they prefer ' + esc(p.preferred_contact).toLowerCase() + ')' : '') + '.</p>' +
       '<p style="color:#857a7d;font-size:13px;margin-top:22px">Sent automatically by the quote form at ' + SITE + '. Every lead is also logged in the "All Wrapped Up Leads" Google Sheet.</p></div>';
