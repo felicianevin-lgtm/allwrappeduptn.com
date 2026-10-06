@@ -427,7 +427,7 @@ home_body = f'''
       <div><dt>What we do</dt><dd>{BIZ} is a professional gift wrapping service. We wrap gifts by hand for businesses and families: corporate holiday gifts, client and employee appreciation gifts, Christmas and Hanukkah gifts, wedding, bridal shower, baby shower, birthday and anniversary gifts.</dd></div>
       <div><dt>Where</dt><dd>Based in {CITY}, Tennessee, on I-75 between Knoxville and Chattanooga. Drop-off in {CITY} by appointment. Pickup and delivery across East Tennessee including Knoxville, Farragut, Maryville, Lenoir City, Loudon, Athens, Madisonville, Cleveland, Ooltewah and Chattanooga.</dd></div>
       <div><dt>Who it's for</dt><dd>Offices, medical and dental practices, law firms, dealerships, real estate teams, banks, churches and schools that need dozens or hundreds of gifts wrapped consistently, and families who would rather spend December with their people than with the tape dispenser.</dd></div>
-      <div><dt>What's included</dt><dd>Premium paper, real ribbon, a hand-tied bow and a gift tag on every gift. Themed and custom builds, logo gift tags, handwritten notes, Santa paper kept separate, gifts returned sorted by recipient, and online orders can ship straight to us.</dd></div>
+      <div><dt>What's included</dt><dd>Premium paper, ribbon chosen for the gift, a hand-tied bow and a handwritten gift tag on every gift. Themed and custom builds, logo gift tags, handwritten notes, Santa paper kept separate, gifts returned sorted by recipient, and online orders can ship straight to us.</dd></div>
       <div><dt>How to book</dt><dd>Request a free quote through the form on this page, or send a question the same way. Every request is answered personally within one business day. Owner-operated, home-based studio.</dd></div>
     </dl>
   </div>
@@ -656,7 +656,7 @@ services_body = page_head("Occasions", "Gift wrapping for weddings, showers, bir
 pages.append(dict(slug="services.html", crumb="Occasions",
   title="Wedding, Shower & Birthday Gift Wrapping | All Wrapped Up TN",
   og_title="Gift Wrapping for Weddings, Showers, Birthdays & Anniversaries — East Tennessee",
-  desc="Gift wrapping for weddings, bridal and baby showers, birthdays, anniversaries and holidays in Sweetwater, Knoxville and Chattanooga, TN. Real ribbon, hand-tied bows.",
+  desc="Gift wrapping for weddings, bridal and baby showers, birthdays, anniversaries and holidays in Sweetwater, Knoxville and Chattanooga, TN. Hand-tied bows, handwritten tags, pickup and delivery available.",
   body=services_body))
 
 # PRICING
@@ -1182,7 +1182,7 @@ urls = "".join(f"  <url><loc>{SITE}/{'' if s=='index.html' else s[:-5] + '/'}</l
 - Corporate gift wrapping: holiday party gifts, client and referral gifts, employee appreciation, welcome kits, white elephant and office party gifts. Brand-color ribbon, printed logo gift tags, consistent look across the whole order, pickup from the office, delivery to the office or venue, one invoice. {SITE}/corporate-gift-wrapping/
 - Holiday gift wrapping for families: whole Christmas lists wrapped, Santa paper kept separate, gifts returned sorted by recipient, one paper per person or one matching look, online orders can ship straight to the studio. {SITE}/holiday-gift-wrapping/
 - Occasions: weddings, bridal showers, baby showers, birthdays, anniversaries, Hanukkah, Valentine's Day, Mother's and Father's Day, Easter, graduation. Themed and custom builds (for example a gift wrapped as a shirt and tie, stacked two-tier wraps). {SITE}/services/
-- Every gift includes premium paper, real ribbon, a hand-tied bow and a tag. Unusual shapes (bikes, baskets, instruments, plush toys, bottles) welcome.
+- Every gift includes premium paper, ribbon chosen for the gift, a hand-tied bow and a handwritten tag. Unusual shapes (bikes, baskets, instruments, plush toys, bottles) welcome.
 
 ## Service area
 Sweetwater (home base, drop-off by appointment, free), Madisonville, Athens, Niota, Loudon, Lenoir City, Tellico Village, Maryville, Alcoa, Farragut, Knoxville, Cleveland, Ooltewah, Chattanooga. City pages: {", ".join(SITE + "/" + c["slug"][:-5] + "/" for c in CITIES)}
