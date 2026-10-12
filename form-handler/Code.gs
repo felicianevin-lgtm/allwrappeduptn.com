@@ -8,6 +8,7 @@
  *      Reply-To is also set to the lead's email, but a plain Reply quotes this email back to them,
  *      so the body carries only the lead's own answers, no internal notes.
  *   3. Nothing to click, ever. No activation, no forwarding confirmation.
+ *   4. Drops spam (see spamReasons) onto a 'Spam' tab of the sheet instead of emailing it.
  *
  * Setup (once, in the team@norcaladmin.com Google account):
  *   1. Create a Google Sheet called "All Wrapped Up Leads".
@@ -42,8 +43,9 @@ var COLUMNS = [
 function doPost(e) {
   try {
     var p = (e && e.parameter) || {};
-    if (p.website) return redirect();                       // honeypot filled: a bot, drop silently
     if (!p.name && !p.email && !p.message) return redirect();
+    var reasons = spamReasons(p);
+    if (reasons.length) { logSpam(p, reasons); return redirect(); }   // caught: kept on the Spam tab, no email
 
     var row = COLUMNS.map(function (c) { return typeof c[1] === 'function' ? c[1](p) : (p[c[1]] || ''); });
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
@@ -85,6 +87,39 @@ function doPost(e) {
 }
 
 function doGet() { return redirect(); }
+
+// ---- Spam filter -------------------------------------------------------------
+// The website's JavaScript stamps every real submission with the page path, the time the page
+// loaded (t) and a checksum of it (k). Bots that post straight to this URL send none of that.
+function spamReasons(p) {
+  var hard = [], soft = [];
+  if (p.website) hard.push('honeypot field filled');
+  if (!p.t || !p.k || String(checksum(p.t)) !== String(p.k)) hard.push('posted without the website form (no page token)');
+  else if (Date.now() - Number(p.t) < 3000) hard.push('submitted less than 3 seconds after the page loaded');
+  var text = [p.name, p.company, p.message].join(' ');
+  if (/https?:\/\/|www\.|\.(ru|cn|xyz|top|club|site)\b/i.test(text)) soft.push('link in message');
+  if (/[Ѐ-ӿ一-鿿؀-ۿ]/.test(text)) soft.push('non-Latin text');
+  if (p.needed_by && /^\d{4}-\d{2}-\d{2}$/.test(p.needed_by) && new Date(p.needed_by) < new Date(Date.now() - 864e5)) soft.push('needed-by date is in the past');
+  var digits = (p.phone || '').replace(/\D/g, '');
+  if (digits && !(digits.length === 10 || (digits.length === 11 && digits.charAt(0) === '1'))) soft.push('phone is not a US number');
+  if (p.name && !/[aeiouy]/i.test(p.name)) soft.push('name has no vowels');
+  if (p.email && /^no-?reply|\d{5,}@/i.test(p.email)) soft.push('email looks generated');
+  if (p.client_type && !/^(corporate|family|wedding|shower|birthday|question|other)$/.test(p.client_type)) soft.push('invalid form value');
+  return hard.length ? hard.concat(soft) : (soft.length >= 2 ? soft : []);
+}
+function checksum(t) { var h = 0, s = String(t); for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 1000003; return h; }
+function logSpam(p, reasons) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Spam') || ss.insertSheet('Spam');
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(COLUMNS.map(function (c) { return c[0]; }).slice(0, -1).concat(['Why it was caught']));
+      sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold'); sheet.setFrozenRows(1);
+    }
+    var row = COLUMNS.slice(0, -1).map(function (c) { return typeof c[1] === 'function' ? c[1](p) : (p[c[1]] || ''); });
+    sheet.appendRow(row.concat([reasons.join('; ')]));
+  } catch (ignore) {}
+}
 
 // Non-JavaScript fallback: the browser lands here after a plain form post, so send it on to the thank-you page.
 function redirect() {

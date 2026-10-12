@@ -111,6 +111,9 @@
     // Apps Script endpoint: post in the background, then go to the thank-you page (plain submit still works without JS)
     if (contactForm.getAttribute('data-endpoint') === 'script') {
       var pageField = contactForm.querySelector('[name="page"]'); if (pageField) pageField.value = location.pathname;
+      // Spam check: stamp the load time and a checksum of it; the lead handler rejects posts without them.
+      var tField = contactForm.querySelector('[name="t"]'), kField = contactForm.querySelector('[name="k"]');
+      if (tField && kField) { var t = String(Date.now()), h = 0; for (var ci = 0; ci < t.length; ci++) h = (h * 31 + t.charCodeAt(ci)) % 1000003; tField.value = t; kField.value = h; }
       contactForm.addEventListener('submit', function (e) {
         if (!contactForm.checkValidity()) return;
         e.preventDefault();

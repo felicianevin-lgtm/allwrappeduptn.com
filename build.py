@@ -318,7 +318,7 @@ def estimator(compact=False):
   </div>
 </form>'''
 
-FORM_HIDDEN = (f'''<input type="hidden" name="page" value="">
+FORM_HIDDEN = (f'''<input type="hidden" name="page" value=""><input type="hidden" name="t" value=""><input type="hidden" name="k" value="">
       <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">''' if FORM_ENDPOINT else f'''<input type="hidden" name="_subject" value="New gift wrapping quote request">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_next" value="{SITE}/thank-you/">
